@@ -4,11 +4,11 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    public Vector3 InputVector { get; private set; }
+    public Vector2 InputVector { get; private set; }
 
     private void OnMove(InputValue value)
     {
-        InputVector = new Vector3(value.Get<Vector2>().x, 0, value.Get<Vector2>().y);
+        InputVector = value.Get<Vector2>();
     }
 
     private void OnApplicationFocus(bool hasFocus)

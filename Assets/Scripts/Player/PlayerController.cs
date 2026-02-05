@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
 {
     public event Action<float> OnPlayerMove;
 
+    [SerializeField] private Transform playerCam;
+
     #region Speed Variables
     [SerializeField] private float walkSpeed;
     private float idleSpeed;
@@ -37,10 +39,15 @@ public class PlayerController : MonoBehaviour
     {
         CalculateSpeed();
 
-        if (inputManager.InputVector != Vector3.zero)
+        if (inputManager.InputVector != Vector2.zero)
         {
-            Vector3 movementVector = inputManager.InputVector.normalized * (Time.deltaTime * currentSpeed);
-            characterController.Move(movementVector);
+            // creates camera relative movement by multiplying the cameras right and forward axis by the input 
+            Vector3 playerCamForward = playerCam.right * inputManager.InputVector.x + playerCam.forward * inputManager.InputVector.y;
+            // gets rid of the y so you don't walk on air
+            Vector3 movement = Vector3.ProjectOnPlane(playerCamForward, Vector3.up).normalized;
+            
+            transform.rotation = Quaternion.LookRotation(movement, Vector3.up);
+            characterController.Move(movement * (currentSpeed * Time.deltaTime));
         }
         
         OnPlayerMove?.Invoke(currentSpeed);
@@ -49,7 +56,7 @@ public class PlayerController : MonoBehaviour
     private void CalculateSpeed()
     {
         // ? = if else
-        float desiredSpeed = inputManager.InputVector != Vector3.zero ? walkSpeed : idleSpeed;
+        float desiredSpeed = inputManager.InputVector != Vector2.zero ? walkSpeed : idleSpeed;
         const float transitionSpeed = 0.2f;
 
         if (speedCoroutine == null & !Mathf.Approximately(currentSpeed, desiredSpeed))
