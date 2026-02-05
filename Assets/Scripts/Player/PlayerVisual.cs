@@ -3,9 +3,13 @@ using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
 {
+    private Animator animator;
     private static readonly int SpeedID = Animator.StringToHash("Speed");
     private static readonly int MotionSpeedID = Animator.StringToHash("MotionSpeed");
-    private Animator animator;
+    private static readonly int JumpID = Animator.StringToHash("Jump");
+    private static readonly int Grounded = Animator.StringToHash("Grounded");
+
+
     private PlayerController playerController;
 
     private float lastBlendSpeed;
@@ -18,6 +22,8 @@ public class PlayerVisual : MonoBehaviour
         if (playerController)
         {
             playerController.OnPlayerMove += SetMovementBlend;
+            playerController.OnPlayerLand += PlayLandAnimation;
+            playerController.OnPlayerJump += PlayJumpAnimation;
         }
     }
 
@@ -35,8 +41,15 @@ public class PlayerVisual : MonoBehaviour
         }
     }
 
-    private void OnFootstep()
+    private void PlayJumpAnimation()
     {
-        
+        animator.SetBool(Grounded, false);
+        animator.SetBool(JumpID, true);
+    }
+
+    private void PlayLandAnimation()
+    {
+        animator.SetBool(JumpID, false);
+        animator.SetBool(Grounded, true);
     }
 }

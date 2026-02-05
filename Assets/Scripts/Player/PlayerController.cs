@@ -10,14 +10,23 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public event Action<float> OnPlayerMove;
-
+    public event Action OnPlayerJump;
+    public event Action OnPlayerLand;
+    
+    #region Movement Variables
     [SerializeField] private Transform playerCam;
-
-    #region Speed Variables
     [SerializeField] private float walkSpeed;
     private float idleSpeed;
     private float currentSpeed;
     private Coroutine speedCoroutine;
+    #endregion
+
+    #region Jump Variables
+
+    [SerializeField] private float jumpHeight;
+    private readonly float gravity = Physics.gravity.y;
+    private Vector3 velocity;
+
     #endregion
     
     private CharacterController characterController;
@@ -29,6 +38,11 @@ public class PlayerController : MonoBehaviour
         inputManager = GetComponent<InputManager>();
     }
 
+    private void Start()
+    {
+        velocity = characterController.velocity;
+    }
+
     private void Update()
     {
         Move();
@@ -38,17 +52,22 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         CalculateSpeed();
+        Vector3 movement = new Vector3();
 
         if (inputManager.InputVector != Vector2.zero)
         {
             // creates camera relative movement by multiplying the cameras right and forward axis by the input 
             Vector3 playerCamForward = playerCam.right * inputManager.InputVector.x + playerCam.forward * inputManager.InputVector.y;
             // gets rid of the y so you don't walk on air
-            Vector3 movement = Vector3.ProjectOnPlane(playerCamForward, Vector3.up).normalized;
+            movement = Vector3.ProjectOnPlane(playerCamForward, Vector3.up).normalized;
             
             transform.rotation = Quaternion.LookRotation(movement, Vector3.up);
-            characterController.Move(movement * (currentSpeed * Time.deltaTime));
         }
+        
+        Jump();
+        
+        Vector3 finalMove = (movement * currentSpeed) + (velocity.y * Vector3.up);
+        characterController.Move(finalMove *  Time.deltaTime);
         
         OnPlayerMove?.Invoke(currentSpeed);
     }
@@ -80,5 +99,23 @@ public class PlayerController : MonoBehaviour
         currentSpeed = targetSpeed;
         speedCoroutine = null;
     }
+    
+    private void Jump()
+    {
+        if (characterController.isGrounded && velocity.y < 0f)
+        {
+            velocity.y = 0;
+            OnPlayerLand?.Invoke();
+        }
+
+        if (inputManager.JumpAction.WasPressedThisFrame() && characterController.isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            OnPlayerJump?.Invoke();
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+    }
+
     #endregion
 }

@@ -16,13 +16,13 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Look",
-                    "type": "Value",
-                    "id": "cff38b0c-a84b-4b16-8d93-cb24fcb702d0",
-                    "expectedControlType": "Vector2",
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "0fd956c0-0fed-44b4-9826-5d741515a1fc",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -83,23 +83,12 @@
                 },
                 {
                     "name": "",
-                    "id": "1144eb3a-a1a0-45bd-8ad9-770b451bb58f",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard/Mouse",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "384ca90c-0d83-4f20-a972-97e7901cc0e3",
-                    "path": "<Mouse>/delta",
+                    "id": "9ad91872-c136-44cd-ab87-2432f0945de4",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Look",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
