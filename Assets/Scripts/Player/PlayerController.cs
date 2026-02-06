@@ -13,7 +13,8 @@ public class PlayerController : MonoBehaviour
     
     #region Movement Variables
     [SerializeField] private Transform playerCam;
-    [SerializeField] private float walkSpeed;
+    [SerializeField] private float walkSpeed = 3;
+    [SerializeField] private float runSpeed = 6;
     private float idleSpeed;
     private float currentSpeed;
     private Coroutine speedCoroutine;
@@ -54,18 +55,23 @@ public class PlayerController : MonoBehaviour
     #region Movement
     private void Move()
     {
-        CalculateSpeed();
-        var movement = new Vector3();
+        Vector2 input = inputManager.InputVector.normalized;
 
-        if (inputManager.InputVector != Vector2.zero)
+        Vector3 camForward = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up).normalized;
+        Vector3 camRight   = Vector3.Cross(Vector3.up, camForward);
+        
+        // creates camera relative movement by multiplying the cameras right and forward axis by the input 
+        Vector3 moveDir = camRight * input.x + camForward * input.y;
+        // gets rid of the y so you don't walk on air
+        Vector3 movement = Vector3.ProjectOnPlane(moveDir, Vector3.up);
+
+        const float rotationInputThreshold = 0.1f;
+        if (movement.sqrMagnitude > rotationInputThreshold)
         {
-            // creates camera relative movement by multiplying the cameras right and forward axis by the input 
-            Vector3 playerCamForward = playerCam.right * inputManager.InputVector.x + playerCam.forward * inputManager.InputVector.y;
-            // gets rid of the y so you don't walk on air
-            movement = Vector3.ProjectOnPlane(playerCamForward, Vector3.up).normalized;
-            
             transform.rotation = Quaternion.LookRotation(movement, Vector3.up);
         }
+        
+        CalculateSpeed(movement);
         
         Vector3 finalMove = (movement * currentSpeed) + (velocity.y * Vector3.up);
         characterController.Move(finalMove *  Time.deltaTime);
@@ -73,11 +79,16 @@ public class PlayerController : MonoBehaviour
         OnPlayerMove?.Invoke(currentSpeed);
     }
     
-    private void CalculateSpeed()
+    private void CalculateSpeed(Vector3 movement)
     {
+        const float transitionSpeed = 0.2f;
         // ? = if else
         float desiredSpeed = inputManager.InputVector != Vector2.zero ? walkSpeed : idleSpeed;
-        const float transitionSpeed = 0.2f;
+
+        if (inputManager.SprintAction.IsPressed() & movement != Vector3.zero)
+        {
+            desiredSpeed = runSpeed;
+        }
 
         if (speedCoroutine == null & !Mathf.Approximately(currentSpeed, desiredSpeed))
         {
