@@ -1,17 +1,15 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(InputManager))]
-[RequireComponent(typeof(PlayerInput))]
-
 public class PlayerController : MonoBehaviour
 {
     public event Action<float> OnPlayerMove;
     public event Action OnPlayerJump;
     public event Action OnPlayerLand;
+    public event Action OnPlayerFall;
     
     #region Movement Variables
     [SerializeField] private Transform playerCam;
@@ -26,6 +24,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight;
     private readonly float gravity = Physics.gravity.y;
     private Vector3 velocity;
+
+    private bool wasGrounded;
+    private bool fallTriggered;
 
     #endregion
     
@@ -46,13 +47,15 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         Move();
+        Fall();
+        Jump();
     }
     
     #region Movement
     private void Move()
     {
         CalculateSpeed();
-        Vector3 movement = new Vector3();
+        var movement = new Vector3();
 
         if (inputManager.InputVector != Vector2.zero)
         {
@@ -63,8 +66,6 @@ public class PlayerController : MonoBehaviour
             
             transform.rotation = Quaternion.LookRotation(movement, Vector3.up);
         }
-        
-        Jump();
         
         Vector3 finalMove = (movement * currentSpeed) + (velocity.y * Vector3.up);
         characterController.Move(finalMove *  Time.deltaTime);
@@ -84,7 +85,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Slowly increments speed over time
+    // increments speed over multiple frames to create a smoother transition
     private IEnumerator LerpSpeed(float targetSpeed, float duration)
     {
         float elapsedTime = 0;
@@ -102,18 +103,33 @@ public class PlayerController : MonoBehaviour
     
     private void Jump()
     {
-        if (characterController.isGrounded && velocity.y < 0f)
-        {
-            velocity.y = 0;
-            OnPlayerLand?.Invoke();
-        }
+        if (!inputManager.JumpAction.WasPressedThisFrame() || !characterController.isGrounded) { return; }
 
-        if (inputManager.JumpAction.WasPressedThisFrame() && characterController.isGrounded)
+        // calculates the required velocity so that the player reaches the jump height at the peak of the jump
+        velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        OnPlayerJump?.Invoke();
+    }
+    
+    private void Fall()
+    {
+        const float safetyFallThreshold = -0.5f;
+        switch (characterController.isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            OnPlayerJump?.Invoke();
+            case true when velocity.y < 0 && !wasGrounded:
+                velocity.y = 0;
+                OnPlayerLand?.Invoke();
+                break;
+            case false when wasGrounded:
+                OnPlayerFall?.Invoke();
+                break;
+            // safety check for rare case when walking off a ledge and wasGrounded is not set correctly 
+            case false when !fallTriggered && velocity.y < safetyFallThreshold:
+                fallTriggered = true;
+                OnPlayerFall?.Invoke();
+                break;
         }
-
+        
+        wasGrounded = characterController.isGrounded;
         velocity.y += gravity * Time.deltaTime;
     }
 

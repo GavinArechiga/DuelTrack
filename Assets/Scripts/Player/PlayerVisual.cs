@@ -1,13 +1,16 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlayerController))]
 public class PlayerVisual : MonoBehaviour
 {
     private Animator animator;
     private static readonly int SpeedID = Animator.StringToHash("Speed");
     private static readonly int MotionSpeedID = Animator.StringToHash("MotionSpeed");
     private static readonly int JumpID = Animator.StringToHash("Jump");
-    private static readonly int Grounded = Animator.StringToHash("Grounded");
+    private static readonly int GroundedID = Animator.StringToHash("Grounded");
+    private static readonly int FreeFallID = Animator.StringToHash("FreeFall");
 
 
     private PlayerController playerController;
@@ -19,12 +22,10 @@ public class PlayerVisual : MonoBehaviour
         animator = GetComponent<Animator>();
         playerController = GetComponent<PlayerController>();
 
-        if (playerController)
-        {
-            playerController.OnPlayerMove += SetMovementBlend;
-            playerController.OnPlayerLand += PlayLandAnimation;
-            playerController.OnPlayerJump += PlayJumpAnimation;
-        }
+        playerController.OnPlayerMove += SetMovementBlend;
+        playerController.OnPlayerLand += PlayLandAnimation;
+        playerController.OnPlayerJump += PlayJumpAnimation;
+        playerController.OnPlayerFall += PlayFreeFallAnimation;
     }
 
     private void Start()
@@ -43,13 +44,20 @@ public class PlayerVisual : MonoBehaviour
 
     private void PlayJumpAnimation()
     {
-        animator.SetBool(Grounded, false);
+        animator.SetBool(GroundedID, false);
         animator.SetBool(JumpID, true);
     }
 
     private void PlayLandAnimation()
     {
         animator.SetBool(JumpID, false);
-        animator.SetBool(Grounded, true);
+        animator.SetBool(FreeFallID, false);
+        animator.SetBool(GroundedID, true);
+    }
+
+    private void PlayFreeFallAnimation()
+    {
+        animator.SetBool(GroundedID, false);
+        animator.SetBool(FreeFallID, true);
     }
 }
