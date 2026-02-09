@@ -6,10 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(InputManager))]
 public class PlayerController : MonoBehaviour
 {
+    #region Events
+    // player controller -> player visual events
     public event Action<float> OnPlayerMove;
     public event Action OnPlayerJump;
     public event Action OnPlayerLand;
     public event Action OnPlayerFall;
+    #endregion
     
     #region Movement Variables
     [SerializeField] private Transform playerCam;
@@ -17,6 +20,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float runSpeed = 6;
     private float idleSpeed;
     private float currentSpeed;
+    private Quaternion previousRotation;
+    private Coroutine rotationCoroutine;
     private Coroutine speedCoroutine;
     #endregion
 
@@ -43,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         velocity = characterController.velocity;
+        previousRotation = transform.rotation;
     }
 
     private void Update()
@@ -57,28 +63,43 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 input = inputManager.InputVector.normalized;
 
+        // removes the y so the camera tilt does not affect movement. Also makes sure both forward and right are perpendicular to avoid having any skew. 
         Vector3 camForward = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up).normalized;
         Vector3 camRight   = Vector3.Cross(Vector3.up, camForward);
         
         // creates camera relative movement by multiplying the cameras right and forward axis by the input 
         Vector3 moveDir = camRight * input.x + camForward * input.y;
-        // gets rid of the y so you don't walk on air
-        Vector3 movement = Vector3.ProjectOnPlane(moveDir, Vector3.up);
 
+        // only rotate player if pressing button
         const float rotationInputThreshold = 0.1f;
-        if (movement.sqrMagnitude > rotationInputThreshold)
+        if (moveDir.sqrMagnitude > rotationInputThreshold)
         {
-            transform.rotation = Quaternion.LookRotation(movement, Vector3.up);
+            RotatePlayer(moveDir);
         }
         
-        CalculateSpeed(movement);
+        CalculateSpeed(moveDir);
         
-        Vector3 finalMove = (movement * currentSpeed) + (velocity.y * Vector3.up);
+        Vector3 finalMove = (moveDir * currentSpeed) + (velocity.y * Vector3.up);
         characterController.Move(finalMove *  Time.deltaTime);
         
         OnPlayerMove?.Invoke(currentSpeed);
     }
-    
+    private void RotatePlayer(Vector3 movement)
+    {
+        Quaternion newRotation = Quaternion.LookRotation(movement, Vector3.up);
+
+        if (newRotation == previousRotation || rotationCoroutine != null) { return; }
+        
+        float angle = Quaternion.Angle(newRotation, previousRotation);
+        
+        // makes the transition longer for larger angle differences 
+        const float shortTransition = 0.1f;
+        const float longTransition = 0.2f;
+        
+        float duration = Mathf.Lerp(shortTransition, longTransition, angle / 180f);
+        rotationCoroutine = StartCoroutine(SmoothRotation(newRotation, duration));
+    }
+
     private void CalculateSpeed(Vector3 movement)
     {
         const float transitionSpeed = 0.2f;
@@ -110,6 +131,23 @@ public class PlayerController : MonoBehaviour
         
         currentSpeed = targetSpeed;
         speedCoroutine = null;
+    }
+
+    private IEnumerator SmoothRotation(Quaternion targetRotation, float duration)
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float interpolationValue = elapsedTime / duration;
+            transform.rotation = Quaternion.Slerp(previousRotation, targetRotation, interpolationValue);
+            yield return null;
+        }
+        
+        transform.rotation = targetRotation;
+        previousRotation = targetRotation;
+        rotationCoroutine = null;
     }
     
     private void Jump()
