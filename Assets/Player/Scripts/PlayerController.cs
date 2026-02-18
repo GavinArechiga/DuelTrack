@@ -56,6 +56,9 @@ public class PlayerController : MonoBehaviour
         Move();
         Fall();
         Jump();
+        
+        //TODO: Move this to construction costume script once that is implemented
+        GridSystem.Instance.UpdateCellPosition(transform.position);
     }
     
     #region Movement
