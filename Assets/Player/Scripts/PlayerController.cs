@@ -55,12 +55,13 @@ public class PlayerController : MonoBehaviour
 
         //TODO: Move to construction tool
         inputManager.PrimaryToolAction.performed += _ => PlaceObject();
+        GridSystem.Instance.PlayerTransform = transform;
     }
 
     //TODO: move to construction tool
     private void PlaceObject()
     {
-        GridSystem.Instance.PlaceObject(testGridPrefab, transform);
+        GridSystem.Instance.PlaceObject(testGridPrefab);
     }
 
     private void Update()

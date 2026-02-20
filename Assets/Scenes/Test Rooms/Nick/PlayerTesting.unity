@@ -401,7 +401,6 @@ GameObject:
   - component: {fileID: 1023820458}
   - component: {fileID: 1023820457}
   - component: {fileID: 1023820456}
-  - component: {fileID: 1023820455}
   m_Layer: 0
   m_Name: CellIndicator
   m_TagString: Untagged
@@ -409,28 +408,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &1023820455
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023820454}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1023820456
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -739,7 +716,6 @@ GameObject:
   - component: {fileID: 1251274866}
   - component: {fileID: 1251274869}
   - component: {fileID: 1251274868}
-  - component: {fileID: 1251274867}
   m_Layer: 0
   m_Name: GridVisual
   m_TagString: Untagged
@@ -762,28 +738,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2051576217}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &1251274867
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1251274865}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1251274868
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1071,6 +1025,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridSystem
   grid: {fileID: 2051576216}
   cellIndicator: {fileID: 751055838}
+  gridObjectListSO: {fileID: 11400000, guid: 8c2fbd037cec5de49bbf16b934128479, type: 2}
 --- !u!1 &2061287834
 GameObject:
   m_ObjectHideFlags: 0
