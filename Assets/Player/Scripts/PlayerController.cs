@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     #endregion
     
     #region Movement Variables
+
+    public InputManager.Direction CurrentFacingDirection { get; private set; } = InputManager.Direction.Forward;
     [SerializeField] private Transform playerCam;
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -55,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
         //TODO: Move to construction tool
         inputManager.PrimaryToolAction.performed += _ => PlaceObject();
-        GridSystem.Instance.PlayerTransform = transform;
+        GridSystem.Instance.PlayerController = this;
     }
 
     //TODO: move to construction tool
@@ -91,6 +93,7 @@ public class PlayerController : MonoBehaviour
         if (moveDir.sqrMagnitude > rotationInputThreshold)
         {
             RotatePlayer(moveDir);
+            UpdateFacingDirection();
         }
         
         CalculateSpeed(moveDir);
@@ -114,6 +117,32 @@ public class PlayerController : MonoBehaviour
         
         float duration = Mathf.Lerp(shortTransition, longTransition, angle / 180f);
         rotationCoroutine = StartCoroutine(SmoothRotation(newRotation, duration));
+    }
+
+    private void UpdateFacingDirection()
+    {
+        Vector3 forward = transform.forward;
+
+        // Vector3.Dot() returns the dot product of two vectors which is a float you get from multiplying the two vectors
+        // if the dot product is 1 then both vectors face the same direction. if the dot product is -1 then they face opposite directions.
+        // if the dot product is 0 then they are at a 90-degree angle
+        // There are also in between values but for this function we only care if it's close to 1 so we know what direction the player is facing 
+        if (Vector3.Dot(forward, Vector3.forward) > 0.5f)
+        {
+            CurrentFacingDirection = InputManager.Direction.Forward;
+        }
+        else if (Vector3.Dot(forward, Vector3.back) > 0.5f)
+        {
+            CurrentFacingDirection = InputManager.Direction.Backward;
+        }
+        else if (Vector3.Dot(forward, Vector3.right) > 0.5f)
+        {
+            CurrentFacingDirection  = InputManager.Direction.Right;
+        }
+        else if (Vector3.Dot(forward, Vector3.left) > 0.5f)
+        {
+            CurrentFacingDirection = InputManager.Direction.Left;
+        }
     }
 
     private void CalculateSpeed(Vector3 movement)
