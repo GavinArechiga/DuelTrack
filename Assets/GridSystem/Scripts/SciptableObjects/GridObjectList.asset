@@ -22,3 +22,6 @@ MonoBehaviour:
   - name: TestGridObject3X2
     gridSize: {x: 3, y: 2}
     prefab: {fileID: 7683273673954475270, guid: ac1ead0ab5766224cb87dad54892d073, type: 3}
+  - name: TestGridObject4x4
+    gridSize: {x: 5, y: 5}
+    prefab: {fileID: 7683273673954475270, guid: d3636398119e3a6419a8b398dd421572, type: 3}
