@@ -41,9 +41,6 @@ public class PlayerController : MonoBehaviour
     private CharacterController characterController;
     private InputManager inputManager;
     
-    //TODO: move to construction tool
-    [SerializeField] private GameObject testGridPrefab;
-    
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -63,7 +60,7 @@ public class PlayerController : MonoBehaviour
     //TODO: move to construction tool
     private void PlaceObject()
     {
-        GridSystem.Instance.PlaceObject(testGridPrefab);
+        GridSystem.Instance.PlaceObject();
     }
 
     private void Update()
