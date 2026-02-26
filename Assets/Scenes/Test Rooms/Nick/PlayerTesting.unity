@@ -1024,11 +1024,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridSystem
   grid: {fileID: 2051576216}
-  cellIndicator: {fileID: 751055838}
   gridObjectListSO: {fileID: 11400000, guid: 8c2fbd037cec5de49bbf16b934128479, type: 2}
-  currentlySelectedObject: {fileID: 7683273673954475270, guid: d3636398119e3a6419a8b398dd421572, type: 3}
+  currentlySelectedObject: {fileID: 7683273673954475270, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
   previewMaterial: {fileID: 2100000, guid: 2b5f9ce8a7649a848993fbb605772403, type: 2}
+  showPlayerCellIndicator: 1
+  cellIndicator: {fileID: 751055838}
   showOccupiedCellsDebug: 1
+  showFrontCellDebug: 1
 --- !u!1 &2061287834
 GameObject:
   m_ObjectHideFlags: 0

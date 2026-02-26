@@ -12,10 +12,14 @@ public class InputManager : MonoBehaviour
     
     public enum Direction
     {
-        Forward,
-        Backward,
-        Left,
-        Right,
+        North,
+        NorthEast,
+        East,
+        SouthEast,
+        South,
+        SouthWest,
+        West,
+        NorthWest,
     }
     
     private PlayerInput playerInput;
@@ -42,10 +46,14 @@ public class InputManager : MonoBehaviour
     {
         return direction switch
         {
-            Direction.Forward  => Vector3.forward,
-            Direction.Backward => Vector3.back,
-            Direction.Left     => Vector3.left,
-            Direction.Right    => Vector3.right,
+            Direction.North => Vector3.forward,
+            Direction.NorthEast => Vector3.forward + Vector3.right,
+            Direction.East => Vector3.right,
+            Direction.SouthEast => Vector3.back + Vector3.right,
+            Direction.South => Vector3.back,
+            Direction.SouthWest => Vector3.back + Vector3.left,
+            Direction.West => Vector3.left,
+            Direction.NorthWest => Vector3.forward + Vector3.left,
             _ => Vector3.zero,
         };
     }
@@ -54,10 +62,14 @@ public class InputManager : MonoBehaviour
     {
         return direction switch
         {
-            Direction.Forward  => Vector3Int.forward,
-            Direction.Backward => Vector3Int.back,
-            Direction.Left     => Vector3Int.left,
-            Direction.Right    => Vector3Int.right,
+            Direction.North => Vector3Int.forward,
+            Direction.NorthEast => Vector3Int.forward + Vector3Int.right,
+            Direction.East => Vector3Int.right,
+            Direction.SouthEast => Vector3Int.back + Vector3Int.right,
+            Direction.South => Vector3Int.back,
+            Direction.SouthWest => Vector3Int.back + Vector3Int.left,
+            Direction.West => Vector3Int.left,
+            Direction.NorthWest => Vector3Int.forward + Vector3Int.left,
             _ => Vector3Int.zero,
         };
     }

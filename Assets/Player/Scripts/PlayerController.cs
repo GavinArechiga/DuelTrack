@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     
     #region Movement Variables
 
-    public InputManager.Direction CurrentFacingDirection { get; private set; } = InputManager.Direction.Forward;
+    public InputManager.Direction CurrentFacingDirection { get; private set; } = InputManager.Direction.North;
     [SerializeField] private Transform playerCam;
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -90,7 +90,6 @@ public class PlayerController : MonoBehaviour
         if (moveDir.sqrMagnitude > rotationInputThreshold)
         {
             RotatePlayer(moveDir);
-            UpdateFacingDirection();
         }
         
         CalculateSpeed(moveDir);
@@ -119,27 +118,22 @@ public class PlayerController : MonoBehaviour
     private void UpdateFacingDirection()
     {
         Vector3 forward = transform.forward;
+        forward.y = 0;
+        forward.Normalize();
+        
+        float angle = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
 
-        // Vector3.Dot() returns the dot product of two vectors which is a float you get from multiplying the two vectors
-        // if the dot product is 1 then both vectors face the same direction. if the dot product is -1 then they face opposite directions.
-        // if the dot product is 0 then they are at a 90-degree angle
-        // There are also in between values but for this function we only care if it's close to 1 so we know what direction the player is facing 
-        if (Vector3.Dot(forward, Vector3.forward) > 0.5f)
+        //Keeps angle positive 
+        if (angle < 0f)
         {
-            CurrentFacingDirection = InputManager.Direction.Forward;
+            angle += 360f;
         }
-        else if (Vector3.Dot(forward, Vector3.back) > 0.5f)
-        {
-            CurrentFacingDirection = InputManager.Direction.Backward;
-        }
-        else if (Vector3.Dot(forward, Vector3.right) > 0.5f)
-        {
-            CurrentFacingDirection  = InputManager.Direction.Right;
-        }
-        else if (Vector3.Dot(forward, Vector3.left) > 0.5f)
-        {
-            CurrentFacingDirection = InputManager.Direction.Left;
-        }
+        
+        // splits player direction into 8 segments each equaling 45 degrees.
+        // By getting the remainder of the players (current angle / 45) / 8 we get the index of which direction they are facing. We then convert the index to the direction enum.
+        //This methode is more accurate than relying on the dot product of the players forward vector 
+        int sector = Mathf.RoundToInt(angle / 45) % 8;
+        CurrentFacingDirection = (InputManager.Direction)sector;
     }
 
     private void CalculateSpeed(Vector3 movement)
@@ -184,11 +178,13 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float interpolationValue = elapsedTime / duration;
             transform.rotation = Quaternion.Slerp(previousRotation, targetRotation, interpolationValue);
+            UpdateFacingDirection();
             yield return null;
         }
         
         transform.rotation = targetRotation;
         previousRotation = targetRotation;
+        UpdateFacingDirection();
         rotationCoroutine = null;
     }
     

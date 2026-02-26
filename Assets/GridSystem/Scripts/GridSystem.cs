@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GridSystem : MonoBehaviour
 {
-    // TODO: add support for diagonals. 
+    //TODO: Add ability to remove objects
+    //TODO: Remove direct dependency on input system 
     public static GridSystem Instance { get; private set; }
     public PlayerController PlayerController { private get; set; }
     
     [SerializeField] private Grid grid;
-    [SerializeField] private GameObject cellIndicator;
     [SerializeField] private GridObjectListSO gridObjectListSO;
     [SerializeField] private GameObject currentlySelectedObject;
     
@@ -19,11 +19,14 @@ public class GridSystem : MonoBehaviour
     private GameObject previewObject;
     private Renderer[] previewRenderers;
     private Vector3Int lastFrontCellPosition;
-    
-    [Header("Debug")]
-    [SerializeField] private bool showOccupiedCellsDebug = true;
 
+    [Header("Debug")] 
+    [SerializeField]private bool showPlayerCellIndicator;
+    [SerializeField] private GameObject cellIndicator;
+    [SerializeField] private bool showOccupiedCellsDebug = true;
+    [SerializeField] private bool showFrontCellDebug = true;
     private Vector3Int currentCellPosition;
+    //TODO: make it a Gameobject, Vector3Int dictionary to support removing objects
     private List<Vector3Int> occupiedCells = new();
     
     
@@ -39,9 +42,18 @@ public class GridSystem : MonoBehaviour
         } 
     }
 
+    private void Start()
+    {
+        cellIndicator.SetActive(showPlayerCellIndicator);
+    }
+
     private void Update()
     {
-        MoveCellIndicator();
+        if (showPlayerCellIndicator)
+        {
+            MoveCellIndicator();
+        }
+        
         ShowObjectPreview();
     }
     public void UpdateCellPosition(Vector3 playerPosition)
@@ -69,6 +81,7 @@ public class GridSystem : MonoBehaviour
         
         Vector3 cellCenterWorldPosition = GetCellCenterWorldPosition(frontCell);
         previewObject = Instantiate(currentlySelectedObject, cellCenterWorldPosition, CalculateObjectRotation());
+        previewObject.GetComponentInChildren<Collider>().enabled = false;
         
         FixPreviewZFighting();
         ChangePreviewMaterial(frontCell);
@@ -150,14 +163,26 @@ public class GridSystem : MonoBehaviour
         return hasOverlap;
     }
 
+    // object rotation is limited to the four cardinal directions.
+    // if player facing is at a diagonal then we collapse the axis clockwise so it looks natural.  
     private Quaternion CalculateObjectRotation()
     {
+        // Object rotations
+        Quaternion north = Quaternion.Euler(0, 0, 0);
+        Quaternion south = Quaternion.Euler(0, 180, 0);
+        Quaternion east = Quaternion.Euler(0, 90, 0);
+        Quaternion west = Quaternion.Euler(0, -90, 0);
+        
         return PlayerController.CurrentFacingDirection switch
         {
-            InputManager.Direction.Forward => Quaternion.Euler(0, 0, 0),
-            InputManager.Direction.Backward => Quaternion.Euler(0, 180, 0),
-            InputManager.Direction.Left => Quaternion.Euler(0, -90, 0),
-            InputManager.Direction.Right => Quaternion.Euler(0, 90, 0),
+            InputManager.Direction.North => north,
+            InputManager.Direction.NorthEast => east,
+            InputManager.Direction.East => east,
+            InputManager.Direction.SouthEast => south,
+            InputManager.Direction.South => south,
+            InputManager.Direction.SouthWest => west,
+            InputManager.Direction.West => west,
+            InputManager.Direction.NorthWest => north,
             _ => Quaternion.identity,
         };
     }
@@ -193,16 +218,22 @@ public class GridSystem : MonoBehaviour
     {
         return PlayerController.CurrentFacingDirection switch
         {
-            InputManager.Direction.Forward => cellPosition,
-            InputManager.Direction.Backward => new Vector3Int(-cellPosition.x, 0, -cellPosition.z),
-            InputManager.Direction.Left => new Vector3Int(-cellPosition.z, 0, -cellPosition.x),
-            InputManager.Direction.Right => new Vector3Int(cellPosition.z, 0, -cellPosition.x),
+            InputManager.Direction.North => cellPosition,
+            InputManager.Direction.South => new Vector3Int(-cellPosition.x, 0, -cellPosition.z),
+            InputManager.Direction.West => new Vector3Int(-cellPosition.z, 0, -cellPosition.x),
+            InputManager.Direction.East => new Vector3Int(cellPosition.z, 0, -cellPosition.x),
             _ => cellPosition,
         };
     }
 
     private void OnDrawGizmos()
     {
+        if (Application.isPlaying && showFrontCellDebug)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(GetCellCenterWorldPosition(GetFrontCell()), Vector3.one);
+        }
+        
         if (occupiedCells.Count == 0 || !showOccupiedCellsDebug) { return; }
 
         foreach (Vector3Int cellPosition in occupiedCells)
