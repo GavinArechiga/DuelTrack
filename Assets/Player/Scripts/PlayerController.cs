@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     #endregion
     
     #region Movement Variables
+
+    public InputManager.Direction CurrentFacingDirection { get; private set; } = InputManager.Direction.North;
     [SerializeField] private Transform playerCam;
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -49,6 +51,22 @@ public class PlayerController : MonoBehaviour
     {
         velocity = characterController.velocity;
         previousRotation = transform.rotation;
+
+        //TODO: Move to construction tool
+        inputManager.PrimaryToolAction.performed += _ => PlaceObject();
+        inputManager.SecondaryToolAction.performed += _ => RemoveObject();
+        GridSystem.Instance.PlayerController = this;
+    }
+    
+    //TODO: move to construction tool
+    private void PlaceObject()
+    {
+        GridSystem.Instance.PlaceObject();
+    }
+    
+    private void RemoveObject()
+    {
+        GridSystem.Instance.RemoveObject();
     }
 
     private void Update()
@@ -56,6 +74,9 @@ public class PlayerController : MonoBehaviour
         Move();
         Fall();
         Jump();
+        
+        //TODO: Move this to construction tool script once that is implemented
+        GridSystem.Instance.UpdateCellPosition(transform.position);
     }
     
     #region Movement
@@ -100,6 +121,27 @@ public class PlayerController : MonoBehaviour
         rotationCoroutine = StartCoroutine(SmoothRotation(newRotation, duration));
     }
 
+    private void UpdateFacingDirection()
+    {
+        Vector3 forward = transform.forward;
+        forward.y = 0;
+        forward.Normalize();
+        
+        float angle = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
+
+        //Keeps angle positive 
+        if (angle < 0f)
+        {
+            angle += 360f;
+        }
+        
+        // splits player direction into 8 segments each equaling 45 degrees.
+        // By getting the remainder of the players (current angle / 45) / 8 we get the index of which direction they are facing. We then convert the index to the direction enum.
+        //This methode is more accurate than relying on the dot product of the players forward vector 
+        int sector = Mathf.RoundToInt(angle / 45) % 8;
+        CurrentFacingDirection = (InputManager.Direction)sector;
+    }
+
     private void CalculateSpeed(Vector3 movement)
     {
         const float transitionSpeed = 0.2f;
@@ -142,11 +184,13 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float interpolationValue = elapsedTime / duration;
             transform.rotation = Quaternion.Slerp(previousRotation, targetRotation, interpolationValue);
+            UpdateFacingDirection();
             yield return null;
         }
         
         transform.rotation = targetRotation;
         previousRotation = targetRotation;
+        UpdateFacingDirection();
         rotationCoroutine = null;
     }
     
