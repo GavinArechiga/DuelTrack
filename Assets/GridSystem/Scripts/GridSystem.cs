@@ -5,8 +5,7 @@ using UnityEngine;
 
 public class GridSystem : MonoBehaviour
 {
-    //TODO: Add ability to remove objects
-    //TODO: Remove direct dependency on input system 
+    //TODO: refactor to remove circular dependency on player and optimize object preview performance.
     public static GridSystem Instance { get; private set; }
     public PlayerController PlayerController { private get; set; }
     
@@ -26,7 +25,6 @@ public class GridSystem : MonoBehaviour
     [SerializeField] private bool showOccupiedCellsDebug = true;
     [SerializeField] private bool showFrontCellDebug = true;
     private Vector3Int currentCellPosition;
-    //TODO: make it a Gameobject, Vector3Int dictionary to support removing objects
     private Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
     
     
@@ -146,8 +144,32 @@ public class GridSystem : MonoBehaviour
         
         Destroy(previewObject);
         GameObject placedObject = Instantiate(currentlySelectedObject, cellCenter, CalculateObjectRotation());
-        //occupiedCells.AddRange(cellPositions);
         placedObjects.Add(placedObject, cellPositions);
+    }
+
+    public void RemoveObject()
+    {
+        Vector3Int frontCell = GetFrontCell();
+        GameObject objectToRemove = null;
+        
+        // using tuple deconstruction to make this more readable.
+        // if you don't know what that is it just lets you give the key and value a variable name
+        foreach ((GameObject prefab, List<Vector3Int> occupiedCells) in placedObjects)
+        {
+            foreach (Vector3Int cellPosition in occupiedCells)
+            {
+                if (cellPosition == frontCell)
+                {
+                    objectToRemove = prefab;
+                }
+            }
+        }
+
+        if (objectToRemove == null) { return; }
+
+        placedObjects.Remove(objectToRemove);
+        Destroy(objectToRemove);
+        ChangePreviewMaterial(frontCell);
     }
 
     private Vector3 GetCellCenterWorldPosition(Vector3Int cellPosition)
@@ -181,6 +203,7 @@ public class GridSystem : MonoBehaviour
         Quaternion east = Quaternion.Euler(0, 90, 0);
         Quaternion west = Quaternion.Euler(0, -90, 0);
         
+        // diagonals favor the cardinal direction that is clockwise from the diagonal
         return PlayerController.CurrentFacingDirection switch
         {
             InputManager.Direction.North => north,
@@ -195,13 +218,16 @@ public class GridSystem : MonoBehaviour
         };
     }
     
-    
+    // Gets the cell in front of the player.
+    // because the player can rotate we need to add the players current direction to get the correct cell
     private Vector3Int GetFrontCell()
     {
         Vector3Int direction = InputManager.DirectionToVector3Int(PlayerController.CurrentFacingDirection);
         return currentCellPosition + direction;
     }
 
+    // returns a list of cell positions that would be occupied if an object of a given size were to be placed down at the front cell position.
+    // This function assumes that the pivot of the prefab is centered on the x and aligned to the back face on -z.
     private List<Vector3Int> GetCellPositions(Vector3Int frontCell, Vector2Int objectSize)
     {
         var cellPositions = new List<Vector3Int>();
@@ -222,13 +248,17 @@ public class GridSystem : MonoBehaviour
         return cellPositions;
     }
 
+    // rotates the passed cell position based on the players facing direction.
+    // cell position is a position so it is more complicated to rotate then an object since we cant just set the rotation to 90 deg.
+    // Instead, we need to swap each axis depending on the rotation and make it positive or negative.
     private Vector3Int RotateCellPosition(Vector3Int cellPosition)
     {
         var east = new Vector3Int(cellPosition.z, 0, -cellPosition.x);
         var south = new Vector3Int(-cellPosition.x, 0, -cellPosition.z);
         var west = new Vector3Int(-cellPosition.z, 0, -cellPosition.x);
         
-        // Northwest is north, but it is not included since we are already returning cell position for unhandled values 
+        // Northwest is north, but it is not included since we are already returning cell position for unhandled values.
+        // diagonals favor the direction that is in the clockwise direction which matches the behavior in CalculateObjectRotation()
         return PlayerController.CurrentFacingDirection switch
         {
             InputManager.Direction.North => cellPosition,
@@ -242,8 +272,10 @@ public class GridSystem : MonoBehaviour
         };
     }
 
+    // debug function for visualizing things in the scene view. Useful for visually seeing the cell positions when debugging  
     private void OnDrawGizmos()
     {
+        // draws the front cell position
         if (Application.isPlaying && showFrontCellDebug)
         {
             Gizmos.color = Color.blue;
@@ -252,6 +284,7 @@ public class GridSystem : MonoBehaviour
         
         if (placedObjects.Count == 0 || !showOccupiedCellsDebug) { return; }
         
+        // draws all the occupied cells in the scene view
         foreach (List<Vector3Int> cellPositions in placedObjects.Values)
         {
             foreach (Vector3Int cellPosition in cellPositions)

@@ -29,8 +29,11 @@ public class InputManager : MonoBehaviour
     
     //Tools
     public InputAction PrimaryToolAction { get; private set; }
+    public InputAction SecondaryToolAction { get; private set; }
     
     private const string PRIMARY_TOOL_ACTION_NAME = "PrimaryToolAction";
+    private const string SECONDARY_TOOL_ACTION_NAME = "SecondaryToolAction";
+    
 
     private void Awake()
     {
@@ -40,6 +43,7 @@ public class InputManager : MonoBehaviour
         SprintAction = playerInput.actions.FindAction(SPRINT_ACTION_NAME);
         
         PrimaryToolAction = playerInput.actions.FindAction(PRIMARY_TOOL_ACTION_NAME);
+        SecondaryToolAction = playerInput.actions.FindAction(SECONDARY_TOOL_ACTION_NAME);
     }
     
     public static Vector3 DirectionToVector3(Direction direction)

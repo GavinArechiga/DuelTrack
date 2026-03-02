@@ -54,13 +54,19 @@ public class PlayerController : MonoBehaviour
 
         //TODO: Move to construction tool
         inputManager.PrimaryToolAction.performed += _ => PlaceObject();
+        inputManager.SecondaryToolAction.performed += _ => RemoveObject();
         GridSystem.Instance.PlayerController = this;
     }
-
+    
     //TODO: move to construction tool
     private void PlaceObject()
     {
         GridSystem.Instance.PlaceObject();
+    }
+    
+    private void RemoveObject()
+    {
+        GridSystem.Instance.RemoveObject();
     }
 
     private void Update()
@@ -69,7 +75,7 @@ public class PlayerController : MonoBehaviour
         Fall();
         Jump();
         
-        //TODO: Move this to construction costume script once that is implemented
+        //TODO: Move this to construction tool script once that is implemented
         GridSystem.Instance.UpdateCellPosition(transform.position);
     }
     
