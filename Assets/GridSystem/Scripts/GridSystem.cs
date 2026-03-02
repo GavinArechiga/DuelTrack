@@ -27,7 +27,7 @@ public class GridSystem : MonoBehaviour
     [SerializeField] private bool showFrontCellDebug = true;
     private Vector3Int currentCellPosition;
     //TODO: make it a Gameobject, Vector3Int dictionary to support removing objects
-    private List<Vector3Int> occupiedCells = new();
+    private Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
     
     
     private void Awake()
@@ -145,8 +145,9 @@ public class GridSystem : MonoBehaviour
         Vector3 cellCenter = GetCellCenterWorldPosition(frontCell);
         
         Destroy(previewObject);
-        Instantiate(currentlySelectedObject, cellCenter, CalculateObjectRotation());
-        occupiedCells.AddRange(cellPositions);
+        GameObject placedObject = Instantiate(currentlySelectedObject, cellCenter, CalculateObjectRotation());
+        //occupiedCells.AddRange(cellPositions);
+        placedObjects.Add(placedObject, cellPositions);
     }
 
     private Vector3 GetCellCenterWorldPosition(Vector3Int cellPosition)
@@ -159,7 +160,14 @@ public class GridSystem : MonoBehaviour
         Vector2Int objectSize = gridObjectListSO.gridObjects.Find(gridObject => gridObject.prefab == currentlySelectedObject).gridSize;
 
         cellPositions = GetCellPositions(frontCell, objectSize);
-        bool hasOverlap = cellPositions.Any(cellPosition => occupiedCells.Contains(cellPosition));
+        bool hasOverlap = false;
+
+        foreach (List<Vector3Int> occupiedCells in placedObjects.Values)
+        {
+            hasOverlap = cellPositions.Any(cellPosition => occupiedCells.Contains(cellPosition));
+            if (hasOverlap) { break; }
+        }
+        
         return hasOverlap;
     }
 
@@ -216,12 +224,20 @@ public class GridSystem : MonoBehaviour
 
     private Vector3Int RotateCellPosition(Vector3Int cellPosition)
     {
+        var east = new Vector3Int(cellPosition.z, 0, -cellPosition.x);
+        var south = new Vector3Int(-cellPosition.x, 0, -cellPosition.z);
+        var west = new Vector3Int(-cellPosition.z, 0, -cellPosition.x);
+        
+        // Northwest is north, but it is not included since we are already returning cell position for unhandled values 
         return PlayerController.CurrentFacingDirection switch
         {
             InputManager.Direction.North => cellPosition,
-            InputManager.Direction.South => new Vector3Int(-cellPosition.x, 0, -cellPosition.z),
-            InputManager.Direction.West => new Vector3Int(-cellPosition.z, 0, -cellPosition.x),
-            InputManager.Direction.East => new Vector3Int(cellPosition.z, 0, -cellPosition.x),
+            InputManager.Direction.NorthEast => east,
+            InputManager.Direction.East => east,
+            InputManager.Direction.SouthEast => south,
+            InputManager.Direction.South => south,
+            InputManager.Direction.SouthWest => west,
+            InputManager.Direction.West => west,
             _ => cellPosition,
         };
     }
@@ -234,15 +250,18 @@ public class GridSystem : MonoBehaviour
             Gizmos.DrawWireCube(GetCellCenterWorldPosition(GetFrontCell()), Vector3.one);
         }
         
-        if (occupiedCells.Count == 0 || !showOccupiedCellsDebug) { return; }
-
-        foreach (Vector3Int cellPosition in occupiedCells)
+        if (placedObjects.Count == 0 || !showOccupiedCellsDebug) { return; }
+        
+        foreach (List<Vector3Int> cellPositions in placedObjects.Values)
         {
-            Vector3 worldPos = grid.CellToWorld(new Vector3Int(cellPosition.x, 0, cellPosition.z));
-            worldPos += grid.cellSize / 2;
+            foreach (Vector3Int cellPosition in cellPositions)
+            {
+                Vector3 worldPos = grid.CellToWorld(new Vector3Int(cellPosition.x, 0, cellPosition.z));
+                worldPos += grid.cellSize / 2;
                 
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(worldPos, Vector3.one);
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireCube(worldPos, Vector3.one);
+            }
         }
     }
 
