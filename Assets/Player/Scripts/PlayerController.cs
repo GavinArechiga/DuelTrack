@@ -55,7 +55,6 @@ public class PlayerController : MonoBehaviour
         //TODO: Move to construction tool
         inputManager.PrimaryToolAction.performed += _ => PlaceObject();
         inputManager.SecondaryToolAction.performed += _ => RemoveObject();
-        GridSystem.Instance.PlayerController = this;
     }
     
     //TODO: move to construction tool
@@ -76,7 +75,7 @@ public class PlayerController : MonoBehaviour
         Jump();
         
         //TODO: Move this to construction tool script once that is implemented
-        GridSystem.Instance.UpdateCellPosition(transform.position);
+        GridSystem.Instance.UpdateGrid(transform.position, CurrentFacingDirection);
     }
     
     #region Movement
