@@ -5,31 +5,27 @@ using UnityEngine;
 
 public class GridSystem : MonoBehaviour
 {
-    //TODO: refactor to remove circular dependency on player and optimize object preview performance.
     public static GridSystem Instance { get; private set; }
-    public PlayerController PlayerController { private get; set; }
+    public event Action OnObjectPlaced;
+    public event Action OnObjectRemoved;
     
+    [field: SerializeField] public GameObject CurrentlySelectedObject { get; private set; }
     [SerializeField] private Grid grid;
     [SerializeField] private GridObjectListSO gridObjectListSO;
-    [SerializeField] private GameObject currentlySelectedObject;
     
-    [Header("Object Preview")]
-    [SerializeField] private Material previewMaterial;
-    private GameObject previewObject;
-    private Renderer[] previewRenderers;
-    private Vector3Int lastFrontCellPosition;
-
+    private Vector3Int currentCellPosition;
+    private InputManager.Direction placementDirection;
+    private readonly Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
+    
     [Header("Debug")] 
     [SerializeField]private bool showPlayerCellIndicator;
     [SerializeField] private GameObject cellIndicator;
     [SerializeField] private bool showOccupiedCellsDebug = true;
     [SerializeField] private bool showFrontCellDebug = true;
-    private Vector3Int currentCellPosition;
-    private Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
-    
     
     private void Awake()
     {
+        //Singleton pattern to make it easier for construction tool to access the grid
         if (Instance != null && Instance != this) 
         { 
             Destroy(this); 
@@ -51,13 +47,30 @@ public class GridSystem : MonoBehaviour
         {
             MoveCellIndicator();
         }
-        
-        ShowObjectPreview();
     }
-    public void UpdateCellPosition(Vector3 playerPosition)
+
+    public PlacementData GetPlacementData()
+    {
+        Vector2Int gridSize = GetObjectGridSize();
+        Vector3Int frontCell = GetFrontCell();
+        Vector3 cellCenter = GetCellCenterWorldPosition(frontCell);
+        Quaternion rotation = CalculateObjectRotation();
+        bool hasOverlap = CheckForOverlap(frontCell, gridSize);
+
+        return new PlacementData
+        {
+            GridSize = gridSize,
+            FrontCell = frontCell,
+            CellCenter = cellCenter,
+            Rotation = rotation,
+            HasOverlap = hasOverlap,
+        };
+    }
+    public void UpdateGrid(Vector3 playerPosition, InputManager.Direction facingDirection)
     {
         currentCellPosition = grid.WorldToCell(playerPosition);
         currentCellPosition.y = 0;
+        placementDirection = facingDirection;
     }
     
     private void MoveCellIndicator()
@@ -66,102 +79,35 @@ public class GridSystem : MonoBehaviour
         worldPosition.y = 0.015f;
         cellIndicator.transform.position = worldPosition;
     }
-
-    #region Object Preview
-    private void ShowObjectPreview()
-    {
-        Vector3Int frontCell = GetFrontCell();
-        
-        if (CheckIfSameFrontCell(frontCell))
-        {
-            return;
-        }
-        
-        Vector3 cellCenterWorldPosition = GetCellCenterWorldPosition(frontCell);
-        previewObject = Instantiate(currentlySelectedObject, cellCenterWorldPosition, CalculateObjectRotation());
-        previewObject.GetComponentInChildren<Collider>().enabled = false;
-        
-        FixPreviewZFighting();
-        ChangePreviewMaterial(frontCell);
-    }
     
-    // Fixes Z fighting between a placed object and the preview by slightly shifting the previews position by 0.1f
-    // on the upwards and backwards directions.
-    private void FixPreviewZFighting()
-    {
-        Vector3 upOffset = Vector3.up * 0.01f;
-        Vector3 backOffset = -previewObject.transform.forward * 0.01f;
-        
-        previewObject.transform.position += upOffset + backOffset;
-    }
-    private void ChangePreviewMaterial(Vector3Int frontCell)
-    {
-        Material previewMaterialInstance = Instantiate(previewMaterial);
-        previewRenderers = previewObject.GetComponentsInChildren<Renderer>();
-        foreach (Renderer rend in previewRenderers)
-        {
-            rend.material = previewMaterialInstance;
-        }
-        
-        bool hasOverlap = CheckForOverlap(frontCell, out List<Vector3Int> _);
-        ChangePreviewObjectColor(hasOverlap ? Color.red : Color.white, previewRenderers);
-    }
-    private bool CheckIfSameFrontCell(Vector3Int frontCell)
-    {
-        if (lastFrontCellPosition == frontCell) {
-            return true;
-        }
-
-        lastFrontCellPosition = frontCell;
-        
-        if (previewObject)
-        {
-            Destroy(previewObject);
-        }
-
-        return false;
-    }
-
-    private void ChangePreviewObjectColor(Color color, Renderer[] renderers)
-    {
-        color.a = previewMaterial.color.a;
-        foreach (Renderer rend in renderers)
-        {
-            rend.material.color = color;
-        }
-    }
-    
-    #endregion
-
     #region Object Placement
     public void PlaceObject()
     {
-        Vector3Int frontCell = GetFrontCell();
-        bool hasOverlap = CheckForOverlap(frontCell, out List<Vector3Int> cellPositions);
-
-        if (hasOverlap) { return; }
-        Vector3 cellCenter = GetCellCenterWorldPosition(frontCell);
+        PlacementData data = GetPlacementData();
         
-        Destroy(previewObject);
-        GameObject placedObject = Instantiate(currentlySelectedObject, cellCenter, CalculateObjectRotation());
+        if (data.HasOverlap) { return; }
+        
+        List<Vector3Int> cellPositions = GetCellPositions(data.FrontCell, data.GridSize);
+        
+        GameObject placedObject = Instantiate(CurrentlySelectedObject, data.CellCenter, data.Rotation);
         placedObjects.Add(placedObject, cellPositions);
+        
+        OnObjectPlaced?.Invoke();
     }
 
     public void RemoveObject()
     {
-        Vector3Int frontCell = GetFrontCell();
+        PlacementData data = GetPlacementData();
         GameObject objectToRemove = null;
+        List<Vector3Int> cellPositions = GetCellPositions(data.FrontCell, data.GridSize);
         
         // using tuple deconstruction to make this more readable.
         // if you don't know what that is it just lets you give the key and value a variable name
         foreach ((GameObject prefab, List<Vector3Int> occupiedCells) in placedObjects)
         {
-            foreach (Vector3Int cellPosition in occupiedCells)
+            if (cellPositions.Any(cellPosition => occupiedCells.Contains(cellPosition)))
             {
-                if (cellPosition == frontCell)
-                {
-                    objectToRemove = prefab;
-                }
+                objectToRemove = prefab;
             }
         }
 
@@ -169,19 +115,24 @@ public class GridSystem : MonoBehaviour
 
         placedObjects.Remove(objectToRemove);
         Destroy(objectToRemove);
-        ChangePreviewMaterial(frontCell);
+        
+        OnObjectRemoved?.Invoke();
     }
 
     private Vector3 GetCellCenterWorldPosition(Vector3Int cellPosition)
     {
         return grid.CellToWorld(cellPosition) + grid.cellSize / 2;
     }
-    
-    private bool CheckForOverlap(Vector3Int frontCell, out List<Vector3Int> cellPositions)
-    {
-        Vector2Int objectSize = gridObjectListSO.gridObjects.Find(gridObject => gridObject.prefab == currentlySelectedObject).gridSize;
 
-        cellPositions = GetCellPositions(frontCell, objectSize);
+    private Vector2Int GetObjectGridSize()
+    {
+        return gridObjectListSO.gridObjects.Find(gridObject => 
+            gridObject.prefab == CurrentlySelectedObject).gridSize;
+    }
+    
+    private bool CheckForOverlap(Vector3Int frontCell, Vector2Int gridSize)
+    {
+        List<Vector3Int> cellPositions = GetCellPositions(frontCell, gridSize);
         bool hasOverlap = false;
 
         foreach (List<Vector3Int> occupiedCells in placedObjects.Values)
@@ -204,7 +155,7 @@ public class GridSystem : MonoBehaviour
         Quaternion west = Quaternion.Euler(0, -90, 0);
         
         // diagonals favor the cardinal direction that is clockwise from the diagonal
-        return PlayerController.CurrentFacingDirection switch
+        return placementDirection switch
         {
             InputManager.Direction.North => north,
             InputManager.Direction.NorthEast => east,
@@ -222,7 +173,7 @@ public class GridSystem : MonoBehaviour
     // because the player can rotate we need to add the players current direction to get the correct cell
     private Vector3Int GetFrontCell()
     {
-        Vector3Int direction = InputManager.DirectionToVector3Int(PlayerController.CurrentFacingDirection);
+        Vector3Int direction = InputManager.DirectionToVector3Int(placementDirection);
         return currentCellPosition + direction;
     }
 
@@ -239,7 +190,7 @@ public class GridSystem : MonoBehaviour
         {
             for (int z = 0; z < depth; z++)
             {
-                Vector3Int cellPosition = new Vector3Int(x, 0, z);
+                var cellPosition = new Vector3Int(x, 0, z);
                 Vector3Int rotatedCellPosition = RotateCellPosition(cellPosition);
                 cellPositions.Add(frontCell + rotatedCellPosition);
             }
@@ -248,7 +199,7 @@ public class GridSystem : MonoBehaviour
         return cellPositions;
     }
 
-    // rotates the passed cell position based on the players facing direction.
+    // rotates the passed cell position based on the placement direction.
     // cell position is a position so it is more complicated to rotate then an object since we cant just set the rotation to 90 deg.
     // Instead, we need to swap each axis depending on the rotation and make it positive or negative.
     private Vector3Int RotateCellPosition(Vector3Int cellPosition)
@@ -259,7 +210,7 @@ public class GridSystem : MonoBehaviour
         
         // Northwest is north, but it is not included since we are already returning cell position for unhandled values.
         // diagonals favor the direction that is in the clockwise direction which matches the behavior in CalculateObjectRotation()
-        return PlayerController.CurrentFacingDirection switch
+        return placementDirection switch
         {
             InputManager.Direction.North => cellPosition,
             InputManager.Direction.NorthEast => east,

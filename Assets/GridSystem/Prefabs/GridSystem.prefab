@@ -31,6 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4053690205910520604}
   - {fileID: 2309368579206180699}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -58,14 +59,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a209a30f1b53020489727908b1509c40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridSystem
+  <CurrentlySelectedObject>k__BackingField: {fileID: 7683273673954475270, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
   grid: {fileID: 297251072726891018}
   gridObjectListSO: {fileID: 11400000, guid: 8c2fbd037cec5de49bbf16b934128479, type: 2}
-  currentlySelectedObject: {fileID: 7683273673954475270, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
-  previewMaterial: {fileID: 2100000, guid: 2b5f9ce8a7649a848993fbb605772403, type: 2}
   showPlayerCellIndicator: 1
   cellIndicator: {fileID: 0}
   showOccupiedCellsDebug: 1
   showFrontCellDebug: 1
+--- !u!1 &7351139971509270225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4053690205910520604}
+  - component: {fileID: 1581218090748570536}
+  m_Layer: 0
+  m_Name: GridPreview
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4053690205910520604
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7351139971509270225}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5736142630082559773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1581218090748570536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7351139971509270225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a928513b37d843c4cb47b0a2301c9254, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GridPreview
+  gridSystem: {fileID: 1082121747392483924}
+  previewMaterial: {fileID: 2100000, guid: 2b5f9ce8a7649a848993fbb605772403, type: 2}
 --- !u!1 &8199843874019720086
 GameObject:
   m_ObjectHideFlags: 0
