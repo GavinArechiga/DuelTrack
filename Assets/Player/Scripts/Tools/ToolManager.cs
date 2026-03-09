@@ -3,42 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public enum ToolType
+{
+    None,
+    Construction,
+}
+
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
-    [SerializeField] private Tool[] tools;
-    private Dictionary<ToolType, ITool> toolLookup;
-    private ITool currentTool;
-    
-    public enum ToolType
-    {
-        None,
-        Construction,
-    }
+    [SerializeField] private Tool[] toolArray;
+    private Dictionary<ToolType, Tool> toolLookup;
+    private Tool currentTool;
+
 
     private void Awake()
     {
-        toolLookup = tools.ToDictionary(tool => tool.toolType, tool => (ITool)tool);
+        toolLookup = toolArray.ToDictionary(tool => tool.toolType, tool => tool);
 
-        foreach (Tool tool in tools)
+        foreach (Tool tool in toolArray)
         {
             tool.Initialize(playerController);
         }
     }
 
+    private void Start()
+    {
+        SwitchTool(ToolType.Construction);
+    }
+
+    private void Update()
+    {
+        if (currentTool)
+        {
+            currentTool.ToolUpdate();
+        }
+    }
+
     private void SwitchTool(ToolType toolType)
     {
-        currentTool?.Exit();
-        
-        if (toolType == ToolType.None)
+        if (currentTool != null)
         {
+            currentTool.Exit();
+            currentTool.enabled = false;
             currentTool = null;
         }
-        else
-        {
-            currentTool = toolLookup[toolType];
-            currentTool.Enter();
-        }
+
+        if (toolType == ToolType.None) { return; }
+        
+        currentTool = toolLookup[toolType];
+        currentTool.enabled = true;
+        currentTool.Enter();
         
     }
 }
+
+

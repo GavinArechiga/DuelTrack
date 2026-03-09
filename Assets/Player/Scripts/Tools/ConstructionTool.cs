@@ -1,28 +1,46 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ConstructionTool : Tool
 {
+    [SerializeField] private ConstructionToolInputManagerSO inputManager;
+
+    private void Awake()
+    {
+        inputManager.PlaceObjectAction.performed += PlaceObject;
+        inputManager.RemoveObjectAction.performed += RemoveObject;
+    }
+
+    private void OnDestroy()
+    {
+        inputManager.PlaceObjectAction.performed -= PlaceObject;
+        inputManager.RemoveObjectAction.performed -= RemoveObject;
+    }
+
     public override void Enter()
     {
-        base.Enter();
-    }
-
-    public override void Exit()
-    {
-       base.Exit();
-    }
-
-    private void Update()
-    {
-        
+        inputManager.EnableInput();
+        GridSystem.Instance.EnableGrid(true);
     }
     
-    private void PlaceObject()
+    public override void Exit()
+    {
+        inputManager.DisableInput();
+        GridSystem.Instance.EnableGrid(false);
+    }
+
+    public override void ToolUpdate()
+    {
+        GridSystem.Instance.UpdateGrid(transform.position, playerController.CurrentFacingDirection);
+    }
+    
+    private void PlaceObject(InputAction.CallbackContext ctx)
     {
         GridSystem.Instance.PlaceObject();
     }
     
-    private void RemoveObject()
+    private void RemoveObject(InputAction.CallbackContext ctx)
     {
         GridSystem.Instance.RemoveObject();
     }

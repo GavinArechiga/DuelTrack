@@ -2,24 +2,17 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public abstract class Tool : MonoBehaviour, ITool
+public abstract class Tool : MonoBehaviour
 {
-    public ToolManager.ToolType toolType;
+    public ToolType toolType;
     protected PlayerController playerController;
 
     public void Initialize(PlayerController playerController)
     {
         this.playerController = playerController;
-        enabled = false;
     }
 
-    public virtual void Enter()
-    {
-        enabled = true;
-    }
-
-    public virtual void Exit()
-    {
-        enabled = false;
-    }
+    public abstract void Enter();
+    public abstract void Exit();
+    public abstract void ToolUpdate();
 }

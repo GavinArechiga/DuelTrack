@@ -62,6 +62,8 @@ MonoBehaviour:
   <CurrentlySelectedObject>k__BackingField: {fileID: 7683273673954475270, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
   grid: {fileID: 297251072726891018}
   gridObjectListSO: {fileID: 11400000, guid: 8c2fbd037cec5de49bbf16b934128479, type: 2}
+  gridVisual: {fileID: 8199843874019720086}
+  previewSystem: {fileID: 7351139971509270225}
   showPlayerCellIndicator: 1
   cellIndicator: {fileID: 0}
   showOccupiedCellsDebug: 1
@@ -82,7 +84,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4053690205910520604
 Transform:
   m_ObjectHideFlags: 0
@@ -129,7 +131,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2309368579206180699
 Transform:
   m_ObjectHideFlags: 0

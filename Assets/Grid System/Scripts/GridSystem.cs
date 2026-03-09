@@ -12,9 +12,11 @@ public class GridSystem : MonoBehaviour
     [field: SerializeField] public GameObject CurrentlySelectedObject { get; private set; }
     [SerializeField] private Grid grid;
     [SerializeField] private GridObjectListSO gridObjectListSO;
+    [SerializeField] private GameObject gridVisual;
+    [SerializeField] private GameObject previewSystem;
     
     private Vector3Int currentCellPosition;
-    private InputManager.Direction placementDirection;
+    private Direction placementDirection;
     private readonly Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
     
     [Header("Debug")] 
@@ -66,7 +68,16 @@ public class GridSystem : MonoBehaviour
             HasOverlap = hasOverlap,
         };
     }
-    public void UpdateGrid(Vector3 playerPosition, InputManager.Direction facingDirection)
+
+    public void EnableGrid(bool enable)
+    {
+        gridVisual.SetActive(enable);
+        previewSystem.SetActive(enable);
+        cellIndicator.SetActive(enable);
+    }
+    
+    
+    public void UpdateGrid(Vector3 playerPosition, Direction facingDirection)
     {
         currentCellPosition = grid.WorldToCell(playerPosition);
         currentCellPosition.y = 0;
@@ -157,14 +168,14 @@ public class GridSystem : MonoBehaviour
         // diagonals favor the cardinal direction that is clockwise from the diagonal
         return placementDirection switch
         {
-            InputManager.Direction.North => north,
-            InputManager.Direction.NorthEast => east,
-            InputManager.Direction.East => east,
-            InputManager.Direction.SouthEast => south,
-            InputManager.Direction.South => south,
-            InputManager.Direction.SouthWest => west,
-            InputManager.Direction.West => west,
-            InputManager.Direction.NorthWest => north,
+            Direction.North => north,
+            Direction.NorthEast => east,
+            Direction.East => east,
+            Direction.SouthEast => south,
+            Direction.South => south,
+            Direction.SouthWest => west,
+            Direction.West => west,
+            Direction.NorthWest => north,
             _ => Quaternion.identity,
         };
     }
@@ -173,7 +184,7 @@ public class GridSystem : MonoBehaviour
     // because the player can rotate we need to add the players current direction to get the correct cell
     private Vector3Int GetFrontCell()
     {
-        Vector3Int direction = InputManager.DirectionToVector3Int(placementDirection);
+        Vector3Int direction = placementDirection.ToVector3Int();
         return currentCellPosition + direction;
     }
 
@@ -212,13 +223,13 @@ public class GridSystem : MonoBehaviour
         // diagonals favor the direction that is in the clockwise direction which matches the behavior in CalculateObjectRotation()
         return placementDirection switch
         {
-            InputManager.Direction.North => cellPosition,
-            InputManager.Direction.NorthEast => east,
-            InputManager.Direction.East => east,
-            InputManager.Direction.SouthEast => south,
-            InputManager.Direction.South => south,
-            InputManager.Direction.SouthWest => west,
-            InputManager.Direction.West => west,
+            Direction.North => cellPosition,
+            Direction.NorthEast => east,
+            Direction.East => east,
+            Direction.SouthEast => south,
+            Direction.South => south,
+            Direction.SouthWest => west,
+            Direction.West => west,
             _ => cellPosition,
         };
     }

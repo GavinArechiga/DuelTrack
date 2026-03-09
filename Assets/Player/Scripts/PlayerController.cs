@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent(typeof(InputManager))]
 public class PlayerController : MonoBehaviour
 {
     #region Events
@@ -16,7 +15,8 @@ public class PlayerController : MonoBehaviour
     
     #region Movement Variables
 
-    public InputManager.Direction CurrentFacingDirection { get; private set; } = InputManager.Direction.North;
+    public Direction CurrentFacingDirection { get; private set; } = Direction.North;
+    [SerializeField] private MovementInputManagerSO inputManager;
     [SerializeField] private Transform playerCam;
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -39,33 +39,17 @@ public class PlayerController : MonoBehaviour
     #endregion
     
     private CharacterController characterController;
-    private InputManager inputManager;
+    
     
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        inputManager = GetComponent<InputManager>();
     }
 
     private void Start()
     {
         velocity = characterController.velocity;
         previousRotation = transform.rotation;
-
-        //TODO: Move to construction tool
-        inputManager.PrimaryToolAction.performed += _ => PlaceObject();
-        inputManager.SecondaryToolAction.performed += _ => RemoveObject();
-    }
-    
-    //TODO: move to construction tool
-    private void PlaceObject()
-    {
-        GridSystem.Instance.PlaceObject();
-    }
-    
-    private void RemoveObject()
-    {
-        GridSystem.Instance.RemoveObject();
     }
 
     private void Update()
@@ -73,9 +57,6 @@ public class PlayerController : MonoBehaviour
         Move();
         Fall();
         Jump();
-        
-        //TODO: Move this to construction tool script once that is implemented
-        GridSystem.Instance.UpdateGrid(transform.position, CurrentFacingDirection);
     }
     
     #region Movement
@@ -138,7 +119,7 @@ public class PlayerController : MonoBehaviour
         // By getting the remainder of the players (current angle / 45) / 8 we get the index of which direction they are facing. We then convert the index to the direction enum.
         //This methode is more accurate than relying on the dot product of the players forward vector 
         int sector = Mathf.RoundToInt(angle / 45) % 8;
-        CurrentFacingDirection = (InputManager.Direction)sector;
+        CurrentFacingDirection = (Direction)sector;
     }
 
     private void CalculateSpeed(Vector3 movement)
@@ -147,7 +128,7 @@ public class PlayerController : MonoBehaviour
         // ? = if else
         float desiredSpeed = inputManager.InputVector != Vector2.zero ? walkSpeed : idleSpeed;
 
-        if (inputManager.SprintAction.IsPressed() & movement != Vector3.zero)
+        if (inputManager.SprintPressed & movement != Vector3.zero)
         {
             desiredSpeed = runSpeed;
         }
@@ -195,7 +176,7 @@ public class PlayerController : MonoBehaviour
     
     private void Jump()
     {
-        if (!inputManager.JumpAction.WasPressedThisFrame() || !characterController.isGrounded) { return; }
+        if (!inputManager.JumpWasPerformed || !characterController.isGrounded) { return; }
 
         // calculates the required velocity so that the player reaches the jump height at the peak of the jump
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
