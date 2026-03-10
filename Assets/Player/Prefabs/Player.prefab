@@ -1753,7 +1753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dca864dff9cee44ba381dcb093fb16e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  inputManager: {fileID: 11400000, guid: ab88103decd7b904bbf7e799f6394348, type: 2}
+  inputReader: {fileID: 11400000, guid: ab88103decd7b904bbf7e799f6394348, type: 2}
   playerCam: {fileID: 6518405416858075004}
   walkSpeed: 3
   runSpeed: 6
@@ -1901,7 +1901,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConstructionTool
   toolType: 1
-  inputManager: {fileID: 11400000, guid: 6760b59c54b15d84b8ac4530da3ce694, type: 2}
+  inputReader: {fileID: 11400000, guid: 6760b59c54b15d84b8ac4530da3ce694, type: 2}
 --- !u!1 &5752074397514311265
 GameObject:
   m_ObjectHideFlags: 0

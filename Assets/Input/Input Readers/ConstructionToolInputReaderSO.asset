@@ -10,5 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17c1126721f5adf43a76666b1639ceb1, type: 3}
-  m_Name: ConstructionToolInputManagerSO
+  m_Name: ConstructionToolInputReaderSO
   m_EditorClassIdentifier: Assembly-CSharp::ConstructionToolInputManagerSO
+  inputSource: {fileID: 11400000, guid: 2de339b48945d9347ab0b320386400c6, type: 2}

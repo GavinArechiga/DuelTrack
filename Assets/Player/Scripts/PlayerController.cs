@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     #region Movement Variables
 
     public Direction CurrentFacingDirection { get; private set; } = Direction.North;
-    [SerializeField] private MovementInputManagerSO inputManager;
+    [SerializeField] private MovementInputReaderSO inputReader;
     [SerializeField] private Transform playerCam;
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     #region Movement
     private void Move()
     {
-        Vector2 input = inputManager.InputVector.normalized;
+        Vector2 input = inputReader.InputVector.normalized;
 
         // removes the y so the camera tilt does not affect movement. Also makes sure both forward and right are perpendicular to avoid having any skew. 
         Vector3 camForward = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up).normalized;
@@ -126,9 +126,9 @@ public class PlayerController : MonoBehaviour
     {
         const float transitionSpeed = 0.2f;
         // ? = if else
-        float desiredSpeed = inputManager.InputVector != Vector2.zero ? walkSpeed : idleSpeed;
+        float desiredSpeed = inputReader.InputVector != Vector2.zero ? walkSpeed : idleSpeed;
 
-        if (inputManager.SprintPressed & movement != Vector3.zero)
+        if (inputReader.SprintPressed & movement != Vector3.zero)
         {
             desiredSpeed = runSpeed;
         }
@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
     
     private void Jump()
     {
-        if (!inputManager.JumpWasPerformed || !characterController.isGrounded) { return; }
+        if (!inputReader.JumpWasPerformed || !characterController.isGrounded) { return; }
 
         // calculates the required velocity so that the player reaches the jump height at the peak of the jump
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);

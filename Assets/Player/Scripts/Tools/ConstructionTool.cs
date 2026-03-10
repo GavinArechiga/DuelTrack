@@ -4,43 +4,44 @@ using UnityEngine.InputSystem;
 
 public class ConstructionTool : Tool
 {
-    [SerializeField] private ConstructionToolInputManagerSO inputManager;
+    [SerializeField] private ConstructionToolInputReaderSO inputReader;
 
     private void Awake()
     {
-        inputManager.PlaceObjectAction.performed += PlaceObject;
-        inputManager.RemoveObjectAction.performed += RemoveObject;
+        inputReader.OnPlaceObjectPerformed += PlaceObject;
+        inputReader.OnRemoveObjectPerformed += RemoveObject;
     }
 
     private void OnDestroy()
     {
-        inputManager.PlaceObjectAction.performed -= PlaceObject;
-        inputManager.RemoveObjectAction.performed -= RemoveObject;
+        inputReader.OnPlaceObjectPerformed -= PlaceObject;
+        inputReader.OnRemoveObjectPerformed -= RemoveObject;
     }
 
     public override void Enter()
     {
-        inputManager.EnableInput();
+        inputReader.EnableInput();
         GridSystem.Instance.EnableGrid(true);
     }
     
     public override void Exit()
     {
-        inputManager.DisableInput();
+        inputReader.DisableInput();
         GridSystem.Instance.EnableGrid(false);
     }
 
     public override void ToolUpdate()
     {
-        GridSystem.Instance.UpdateGrid(transform.position, playerController.CurrentFacingDirection);
+        GridSystem.Instance.UpdateGrid(transform.position, 
+            playerController.CurrentFacingDirection);
     }
     
-    private void PlaceObject(InputAction.CallbackContext ctx)
+    private void PlaceObject()
     {
         GridSystem.Instance.PlaceObject();
     }
     
-    private void RemoveObject(InputAction.CallbackContext ctx)
+    private void RemoveObject()
     {
         GridSystem.Instance.RemoveObject();
     }
