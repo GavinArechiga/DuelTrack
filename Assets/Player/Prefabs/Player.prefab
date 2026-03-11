@@ -2044,6 +2044,7 @@ GameObject:
   - component: {fileID: 8121804892727135259}
   - component: {fileID: 921706024298302654}
   - component: {fileID: 2792830849636452107}
+  - component: {fileID: 4895833208599464945}
   m_Layer: 0
   m_Name: PlayerCam
   m_TagString: Untagged
@@ -2309,6 +2310,20 @@ MonoBehaviour:
     NearLimit: 5
     FarLimit: 30
     MaxQualityBoost: 0.2
+--- !u!114 &4895833208599464945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6820482960914966352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 759a8086c4598084abfedd0d03e7e9dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraManager
+  toggleFreeLookEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
+  freeLookComponent: {fileID: 1657174419253108646}
 --- !u!1 &6839084133177517990
 GameObject:
   m_ObjectHideFlags: 0

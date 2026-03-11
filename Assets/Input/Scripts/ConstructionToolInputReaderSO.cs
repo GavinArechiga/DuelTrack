@@ -12,6 +12,8 @@ public class ConstructionToolInputReaderSO : ScriptableObject
 
     private void OnEnable()
     {
+        if (!Application.isPlaying) { return; }
+
         inputSource.PlayerInput.ConstructionTool.PlaceObject.performed += OnPlaceObject;
         inputSource.PlayerInput.ConstructionTool.RemoveObject.performed += OnRemoveObject;
     }

@@ -27,11 +27,6 @@ public class ToolManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        SwitchTool(ToolType.Construction);
-    }
-
     private void Update()
     {
         if (currentTool)
