@@ -16,7 +16,7 @@ public class ToolWheelUI : MonoBehaviour
     [SerializeField] private Color selectedColor;
     
     private bool toolWheelEnabled;
-    private int lastSegmentIndex;
+    private int selectedSegmentIndex;
     private float segmentAngle;
 
     private void Awake()
@@ -75,21 +75,21 @@ public class ToolWheelUI : MonoBehaviour
         float angle = Mathf.Atan2(distance.x, distance.y) * Mathf.Rad2Deg;
         
         angle = (angle + 360f) % 360f;
-        int segmentIndex = Mathf.FloorToInt(angle / segmentAngle);
+        int currentSegmentIndex = Mathf.FloorToInt(angle / segmentAngle);
 
-        if (lastSegmentIndex != segmentIndex)
+        if (selectedSegmentIndex != currentSegmentIndex)
         {
-            segmentArray[lastSegmentIndex].SetColor(normalColor);
-            segmentArray[segmentIndex].SetColor(selectedColor);
+            segmentArray[selectedSegmentIndex].SetColor(normalColor);
+            segmentArray[currentSegmentIndex].SetColor(selectedColor);
             
-            lastSegmentIndex = segmentIndex;
+            selectedSegmentIndex = currentSegmentIndex;
         }
     }
     
     private void SwitchTool()
     {
         if (!toolWheelEnabled) { return; }
-        switchToolEventChannel.Raise(segmentArray[lastSegmentIndex].ToolType);
+        switchToolEventChannel.Raise(segmentArray[selectedSegmentIndex].ToolType);
         CloseToolWheel();
     }
     
