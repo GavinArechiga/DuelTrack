@@ -303,6 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToolManager
   playerController: {fileID: 3059139494034766862}
+  switchToolEventChannel: {fileID: 11400000, guid: ffa3b93341b4a724a861902a4fa61e10, type: 2}
   toolArray:
   - {fileID: 5542721749609089341}
 --- !u!1 &863948347977950911
@@ -1872,7 +1873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &325792445843734697
 Transform:
   m_ObjectHideFlags: 0

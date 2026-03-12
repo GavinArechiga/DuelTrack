@@ -25,6 +25,8 @@ public class UIInputReaderSO : ScriptableObject
     
     private void OnDisable()
     {
+        if (inputSource == null) { return; }
+        
         inputSource.PlayerInput.UI.Disable();
     }
 

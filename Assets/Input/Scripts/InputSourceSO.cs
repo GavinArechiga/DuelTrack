@@ -2,11 +2,14 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "InputSourceSO", menuName = "Scriptable Objects/Input/InputSourceSO")]
-[DefaultExecutionOrder(-1)] // causes issues if this is not run before the input readers
+// The input source is referenced by the input readers.
+// By default, the input readers get loaded before the input source which creates an error because player input will be null.
+//To fix this we manually set the execution order to a lower value so the input source is loaded first.  
+[DefaultExecutionOrder(-1)]
 public class InputSourceSO : ScriptableObject
 {
     public PlayerActions PlayerInput { get; private set; }
-
+    
     private void OnEnable()
     {
         PlayerInput = new PlayerActions();

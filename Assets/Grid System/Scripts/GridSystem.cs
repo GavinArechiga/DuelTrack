@@ -8,6 +8,7 @@ public class GridSystem : MonoBehaviour
     public static GridSystem Instance { get; private set; }
     public event Action OnObjectPlaced;
     public event Action OnObjectRemoved;
+    public event Action OnDisableGrid;
     
     [field: SerializeField] public GameObject CurrentlySelectedObject { get; private set; }
     [SerializeField] private Grid grid;
@@ -38,11 +39,6 @@ public class GridSystem : MonoBehaviour
         } 
     }
 
-    private void Start()
-    {
-        cellIndicator.SetActive(showPlayerCellIndicator);
-    }
-
     private void Update()
     {
         if (showPlayerCellIndicator)
@@ -71,6 +67,15 @@ public class GridSystem : MonoBehaviour
 
     public void EnableGrid(bool enable)
     {
+        if (!enable)
+        {
+            OnDisableGrid?.Invoke();
+        }
+        else if (showPlayerCellIndicator)
+        {
+            cellIndicator.SetActive(true);
+        }
+        
         gridVisual.SetActive(enable);
         previewSystem.SetActive(enable);
         cellIndicator.SetActive(enable);

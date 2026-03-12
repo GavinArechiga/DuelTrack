@@ -7,6 +7,7 @@ public class ToolWheelUI : MonoBehaviour
     [Header("References")]
     [SerializeField] private UIInputReaderSO inputReader;
     [SerializeField] private BoolEventChannel toggleCameraInputEventChannel;
+    [SerializeField] private ToolTypeEventChannel switchToolEventChannel;
     [SerializeField] private GameObject wheelContainer;
     [SerializeField] private SegmentData[] segmentArray;
     
@@ -88,6 +89,7 @@ public class ToolWheelUI : MonoBehaviour
     private void SwitchTool()
     {
         if (!toolWheelEnabled) { return; }
+        switchToolEventChannel.Raise(segmentArray[lastSegmentIndex].ToolType);
         CloseToolWheel();
     }
     

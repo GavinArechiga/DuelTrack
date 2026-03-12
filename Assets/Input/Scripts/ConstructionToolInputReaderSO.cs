@@ -12,14 +12,16 @@ public class ConstructionToolInputReaderSO : ScriptableObject
 
     private void OnEnable()
     {
-        if (!Application.isPlaying) { return; }
-
+        if (inputSource == null) { return; }
+        
         inputSource.PlayerInput.ConstructionTool.PlaceObject.performed += OnPlaceObject;
         inputSource.PlayerInput.ConstructionTool.RemoveObject.performed += OnRemoveObject;
     }
     
     private void OnDisable()
     {
+        if (inputSource == null) { return; }
+        
         inputSource.PlayerInput.ConstructionTool.PlaceObject.performed -= OnPlaceObject;
         inputSource.PlayerInput.ConstructionTool.RemoveObject.performed -= OnRemoveObject;
     }

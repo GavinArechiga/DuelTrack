@@ -13,12 +13,13 @@ public class MovementInputReaderSO : ScriptableObject
     
     private void OnEnable()
     {
-        if (!Application.isPlaying) { return; }
+        if (inputSource == null) { return; }
         inputSource.PlayerInput.Movement.Enable();
     }
     
     private void OnDisable()
     {
+        if (inputSource == null) { return; }
         inputSource.PlayerInput.Movement.Disable();
     }
 }

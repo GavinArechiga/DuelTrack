@@ -19,8 +19,9 @@ public class GridPreview : MonoBehaviour
     {
         gridSystem.OnObjectPlaced += () => Destroy(previewObject);
         gridSystem.OnObjectRemoved += () => ChangePreviewObjectColor(Color.white);
+        gridSystem.OnDisableGrid += HandleDiableGrid;
     }
-
+    
     private void ShowObjectPreview()
     {
         PlacementData data = gridSystem.GetPlacementData();
@@ -36,6 +37,12 @@ public class GridPreview : MonoBehaviour
         
         FixPreviewZFighting();
         ChangePreviewMaterial(data.HasOverlap);
+    }
+    
+    private void HandleDiableGrid()
+    {
+        Destroy(previewObject);
+        lastFrontCellPosition = Vector3Int.zero;
     }
     
     private void FixPreviewZFighting()

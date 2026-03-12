@@ -12,7 +12,9 @@ public enum ToolType
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private ToolTypeEventChannel switchToolEventChannel;
     [SerializeField] private Tool[] toolArray;
+    
     private Dictionary<ToolType, Tool> toolLookup;
     private Tool currentTool;
 
@@ -20,6 +22,7 @@ public class ToolManager : MonoBehaviour
     private void Awake()
     {
         toolLookup = toolArray.ToDictionary(tool => tool.toolType, tool => tool);
+        switchToolEventChannel.AddListener(SwitchTool);
 
         foreach (Tool tool in toolArray)
         {
@@ -40,14 +43,14 @@ public class ToolManager : MonoBehaviour
         if (currentTool != null)
         {
             currentTool.Exit();
-            currentTool.enabled = false;
+            currentTool.gameObject.SetActive(false);
             currentTool = null;
         }
 
         if (toolType == ToolType.None) { return; }
         
         currentTool = toolLookup[toolType];
-        currentTool.enabled = true;
+        currentTool.gameObject.SetActive(true);
         currentTool.Enter();
         
     }
