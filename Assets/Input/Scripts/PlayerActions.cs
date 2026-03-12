@@ -269,6 +269,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Select Tool"",
+                    ""type"": ""Button"",
+                    ""id"": ""30a669cc-7a81-4d37-9a9b-b4b69b0b1430"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -291,6 +300,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard & Mouse"",
                     ""action"": ""Pointer"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e6c93129-136e-48c0-a04b-61688ca75e0e"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""Select Tool"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -329,6 +349,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ToggleToolWheel = m_UI.FindAction("Toggle Tool Wheel", throwIfNotFound: true);
         m_UI_Pointer = m_UI.FindAction("Pointer", throwIfNotFound: true);
+        m_UI_SelectTool = m_UI.FindAction("Select Tool", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -638,6 +659,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
     private readonly InputAction m_UI_ToggleToolWheel;
     private readonly InputAction m_UI_Pointer;
+    private readonly InputAction m_UI_SelectTool;
     /// <summary>
     /// Provides access to input actions defined in input action map "UI".
     /// </summary>
@@ -657,6 +679,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UI/Pointer".
         /// </summary>
         public InputAction @Pointer => m_Wrapper.m_UI_Pointer;
+        /// <summary>
+        /// Provides access to the underlying input action "UI/SelectTool".
+        /// </summary>
+        public InputAction @SelectTool => m_Wrapper.m_UI_SelectTool;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -689,6 +715,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Pointer.started += instance.OnPointer;
             @Pointer.performed += instance.OnPointer;
             @Pointer.canceled += instance.OnPointer;
+            @SelectTool.started += instance.OnSelectTool;
+            @SelectTool.performed += instance.OnSelectTool;
+            @SelectTool.canceled += instance.OnSelectTool;
         }
 
         /// <summary>
@@ -706,6 +735,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Pointer.started -= instance.OnPointer;
             @Pointer.performed -= instance.OnPointer;
             @Pointer.canceled -= instance.OnPointer;
+            @SelectTool.started -= instance.OnSelectTool;
+            @SelectTool.performed -= instance.OnSelectTool;
+            @SelectTool.canceled -= instance.OnSelectTool;
         }
 
         /// <summary>
@@ -824,5 +856,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPointer(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Select Tool" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectTool(InputAction.CallbackContext context);
     }
 }

@@ -6,7 +6,7 @@ public class ToolWheelUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private UIInputReaderSO inputReader;
-    [SerializeField] private VoidEventChannel toggleCameraFreeLookEventChannel;
+    [SerializeField] private BoolEventChannel toggleCameraInputEventChannel;
     [SerializeField] private GameObject wheelContainer;
     [SerializeField] private SegmentData[] segmentArray;
     
@@ -21,6 +21,7 @@ public class ToolWheelUI : MonoBehaviour
     private void Awake()
     {
         inputReader.OnToggleToolWheelPerformed += ToggleToolWheel;
+        inputReader.OnToolSelectedPerformed += SwitchTool;
         segmentAngle = 360f / segmentArray.Length;
     }
 
@@ -35,18 +36,38 @@ public class ToolWheelUI : MonoBehaviour
     private void Update()
     {
         if (!toolWheelEnabled) { return; }
-        SetSelectedSegment();
+        CalculateSelectedSegment();
     }
     
     private void ToggleToolWheel()
     {
         toolWheelEnabled = !toolWheelEnabled;
         wheelContainer.SetActive(toolWheelEnabled);
-        
-        toggleCameraFreeLookEventChannel.Raise();
-    }
+        // camera input starts enabled so we need to flip the enable/disable logic
+        toggleCameraInputEventChannel.Raise(!toolWheelEnabled);
 
-    private void SetSelectedSegment()
+        if (toolWheelEnabled)
+        {
+            inputReader.DisableAllButUI();
+            inputReader.EnableCursor();
+        }
+        else
+        {
+            inputReader.ReEnableMovement();
+            inputReader.DisableCursor();
+        }
+    }
+    
+    private void CloseToolWheel()
+    {
+        toolWheelEnabled = false;
+        wheelContainer.SetActive(false);
+        toggleCameraInputEventChannel.Raise(true);
+        inputReader.ReEnableMovement();
+        inputReader.DisableCursor();
+    }
+    
+    private void CalculateSelectedSegment()
     {
         Vector2 centerPosition = wheelContainer.transform.position;
         Vector2 distance = inputReader.PointerPosition - centerPosition;
@@ -63,4 +84,11 @@ public class ToolWheelUI : MonoBehaviour
             lastSegmentIndex = segmentIndex;
         }
     }
+    
+    private void SwitchTool()
+    {
+        if (!toolWheelEnabled) { return; }
+        CloseToolWheel();
+    }
+    
 }

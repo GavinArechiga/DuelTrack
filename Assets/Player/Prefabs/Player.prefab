@@ -2322,8 +2322,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 759a8086c4598084abfedd0d03e7e9dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraManager
-  toggleFreeLookEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
-  freeLookComponent: {fileID: 1657174419253108646}
+  toggleCameraInputEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
+  inputComponent: {fileID: 921706024298302654}
 --- !u!1 &6839084133177517990
 GameObject:
   m_ObjectHideFlags: 0

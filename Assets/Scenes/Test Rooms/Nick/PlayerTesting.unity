@@ -933,7 +933,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToolWheelUI
   inputReader: {fileID: 11400000, guid: bb28a2f6f0f65db4aa6202cb31573a0f, type: 2}
-  toggleCameraFreeLookEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
+  toggleCameraInputEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
   wheelContainer: {fileID: 826580975}
   segmentArray:
   - {fileID: 1511507873}

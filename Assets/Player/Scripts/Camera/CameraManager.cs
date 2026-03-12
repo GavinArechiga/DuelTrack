@@ -4,18 +4,16 @@ using Unity.Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private VoidEventChannel toggleFreeLookEventChannel;
-    [SerializeField] private CinemachineOrbitalFollow freeLookComponent;
-    private bool freeLookEnabled = true;
+    [SerializeField] private BoolEventChannel toggleCameraInputEventChannel;
+    [SerializeField] private CinemachineInputAxisController inputComponent;
 
     private void Awake()
     {
-        toggleFreeLookEventChannel.AddListener(ToggleFreeLook);
+        toggleCameraInputEventChannel.AddListener(ToggleCameraInput);
     }
 
-    private void ToggleFreeLook()
+    private void ToggleCameraInput(bool enable)
     {
-        freeLookEnabled = !freeLookEnabled;
-        freeLookComponent.enabled = freeLookEnabled;
+        inputComponent.enabled = enable;
     }
 }
