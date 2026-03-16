@@ -16,10 +16,15 @@ public class PlayerController : MonoBehaviour
     #region Movement Variables
 
     public Direction CurrentFacingDirection { get; private set; } = Direction.North;
+    private bool playerCameraActive  = true;
+    [Header("References")]
     [SerializeField] private MovementInputReaderSO inputReader;
+    [SerializeField] private CameraManager cameraManager;
     [SerializeField] private Transform playerCam;
+    [Header("Settings")]
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
+    
     private float idleSpeed;
     private float currentSpeed;
     private Quaternion previousRotation;
@@ -44,7 +49,10 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        cameraManager.OnCameraChange += HandleOnCameraChange;
     }
+
+    
 
     private void Start()
     {
@@ -59,6 +67,11 @@ public class PlayerController : MonoBehaviour
         Jump();
     }
     
+    private void HandleOnCameraChange(CameraType cameraType)
+    {
+        playerCameraActive = cameraType == CameraType.PlayerCamera;
+    }
+    
     #region Movement
     private void Move()
     {
@@ -67,9 +80,18 @@ public class PlayerController : MonoBehaviour
         // removes the y so the camera tilt does not affect movement. Also makes sure both forward and right are perpendicular to avoid having any skew. 
         Vector3 camForward = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up).normalized;
         Vector3 camRight   = Vector3.Cross(Vector3.up, camForward);
+
+        Vector3 moveDir;
         
-        // creates camera relative movement by multiplying the cameras right and forward axis by the input 
-        Vector3 moveDir = camRight * input.x + camForward * input.y;
+        if (playerCameraActive)
+        {
+            // creates camera relative movement by multiplying the cameras right and forward axis by the input
+            moveDir = camRight * input.x + camForward * input.y;
+        }
+        else
+        {
+            moveDir = new Vector3(input.x, 0, input.y).normalized;
+        }
 
         // only rotate player if pressing button
         const float rotationInputThreshold = 0.1f;
