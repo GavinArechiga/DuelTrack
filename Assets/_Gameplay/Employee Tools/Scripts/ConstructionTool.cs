@@ -4,13 +4,19 @@ using UnityEngine.InputSystem;
 
 public class ConstructionTool : Tool
 {
+    [Header("References")]
     [SerializeField] private ConstructionToolInputReaderSO inputReader;
     [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private Transform heldItemParent;
+    
+    private GameObject heldItem;
 
     private void Awake()
     {
         inputReader.OnPlaceObjectPerformed += PlaceObject;
         inputReader.OnRemoveObjectPerformed += RemoveObject;
+
+        GridSystem.Instance.OnCurrentObjectChanged += HandleCurrentObjectChanged;
     }
 
     private void OnDestroy()
@@ -47,5 +53,23 @@ public class ConstructionTool : Tool
     private void RemoveObject()
     {
         GridSystem.Instance.RemoveObject();
+    }
+    
+    private void HandleCurrentObjectChanged(GameObject gameObject)
+    {
+        if (heldItem != null)
+        {
+            Destroy(heldItem);
+        }
+
+        if (gameObject == null) { return; }
+        
+        heldItem = Instantiate(
+            gameObject,
+            heldItemParent.transform.position, 
+            playerController.transform.rotation, 
+            heldItemParent);
+        
+        heldItem.transform.localScale *= 0.3f;
     }
 }

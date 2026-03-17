@@ -8,6 +8,9 @@ public class GridSystem : MonoBehaviour
     public static GridSystem Instance { get; private set; }
     public event Action OnObjectPlaced;
     public event Action OnObjectRemoved;
+    // Only when park catalogue UI is ready 
+    //TODO: create a methode for changing current object and actually set the current object to null.
+    public event Action<GameObject> OnCurrentObjectChanged; 
     public event Action OnDisableGrid;
     
     [field: SerializeField] public GameObject CurrentlySelectedObject { get; private set; }
@@ -70,10 +73,12 @@ public class GridSystem : MonoBehaviour
         if (!enable)
         {
             OnDisableGrid?.Invoke();
+            OnCurrentObjectChanged?.Invoke(null);
         }
         else if (showPlayerCellIndicator)
         {
             cellIndicator.SetActive(true);
+            OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
         }
         
         gridVisual.SetActive(enable);
@@ -109,6 +114,7 @@ public class GridSystem : MonoBehaviour
         placedObjects.Add(placedObject, cellPositions);
         
         OnObjectPlaced?.Invoke();
+        OnCurrentObjectChanged?.Invoke(null);
     }
 
     public void RemoveObject()
@@ -129,6 +135,7 @@ public class GridSystem : MonoBehaviour
 
         if (objectToRemove == null) { return; }
 
+        OnCurrentObjectChanged?.Invoke(objectToRemove);
         placedObjects.Remove(objectToRemove);
         Destroy(objectToRemove);
         
