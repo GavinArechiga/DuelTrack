@@ -6,7 +6,6 @@ public class ConstructionTool : Tool
 {
     [Header("References")]
     [SerializeField] private ConstructionToolInputReaderSO inputReader;
-    [SerializeField] private CameraManager cameraManager;
     [SerializeField] private Transform heldItemParent;
     
     private GameObject heldItem;
@@ -28,14 +27,14 @@ public class ConstructionTool : Tool
     public override void Enter()
     {
         inputReader.EnableInput();
-        cameraManager.SwitchCamera(CameraType.TopDownCamera);
+        CameraManager.Instance.SwitchCamera(CameraType.TopDownCamera);
         GridSystem.Instance.EnableGrid(true);
     }
     
     public override void Exit()
     {
         inputReader.DisableInput();
-        cameraManager.SwitchCamera(CameraType.PlayerCamera);
+        CameraManager.Instance.SwitchCamera(CameraType.PlayerCamera);
         GridSystem.Instance.EnableGrid(false);
     }
 

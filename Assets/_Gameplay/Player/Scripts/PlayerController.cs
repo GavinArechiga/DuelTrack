@@ -19,8 +19,7 @@ public class PlayerController : MonoBehaviour
     private bool playerCameraActive  = true;
     [Header("References")]
     [SerializeField] private MovementInputReaderSO inputReader;
-    [SerializeField] private CameraManager cameraManager;
-    [SerializeField] private Transform playerCam;
+    [SerializeField] private Transform playerCamTransform;
     [Header("Settings")]
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -49,11 +48,9 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        cameraManager.OnCameraChange += HandleOnCameraChange;
+        CameraManager.Instance.OnCameraChange += HandleOnCameraChange;
     }
-
     
-
     private void Start()
     {
         velocity = characterController.velocity;
@@ -78,7 +75,7 @@ public class PlayerController : MonoBehaviour
         Vector2 input = inputReader.InputVector.normalized;
 
         // removes the y so the camera tilt does not affect movement. Also makes sure both forward and right are perpendicular to avoid having any skew. 
-        Vector3 camForward = Vector3.ProjectOnPlane(playerCam.forward, Vector3.up).normalized;
+        Vector3 camForward = Vector3.ProjectOnPlane(playerCamTransform.forward, Vector3.up).normalized;
         Vector3 camRight   = Vector3.Cross(Vector3.up, camForward);
 
         Vector3 moveDir;

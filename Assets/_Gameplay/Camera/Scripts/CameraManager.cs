@@ -6,10 +6,12 @@ public class CameraManager : MonoBehaviour
 {
     [Header("Cameras")]
     [SerializeField] private CinemachineCamera playerCamera;
-    [SerializeField] private CinemachineCamera topDownCamera;
+    [SerializeField] private CinemachineCamera buildCamera;
     
     [Header("Events")]
     [SerializeField] private BoolEventChannel toggleCameraInputEventChannel;
+    
+    public static CameraManager Instance  { get; private set; }
 
     public event Action<CameraType> OnCameraChange;
     
@@ -17,6 +19,15 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this) 
+        { 
+            Destroy(this); 
+        } 
+        else 
+        { 
+            Instance = this; 
+        } 
+        
         toggleCameraInputEventChannel.AddListener(TogglePlayerCameraInput);
         inputComponent = playerCamera.GetComponent<CinemachineInputAxisController>();
     }
@@ -40,24 +51,21 @@ public class CameraManager : MonoBehaviour
     private void EnableTopDownCamera()
     {
         // Switch cameras
-        topDownCamera.Priority = 1;
+        buildCamera.Priority = 1;
         playerCamera.Priority = 0;
         
-        topDownCamera.gameObject.SetActive(true);
+        buildCamera.gameObject.SetActive(true);
         playerCamera.gameObject.SetActive(false);
+        
     }
     private void EnablePlayerCamera()
     {
         // Switch cameras
-        topDownCamera.Priority = 0;
+        buildCamera.Priority = 0;
         playerCamera.Priority = 1;
         
-        topDownCamera.gameObject.SetActive(false);
+        buildCamera.gameObject.SetActive(false);
         playerCamera.gameObject.SetActive(true);
-        
-        // Recenter camera
-        var playerCamOrbitalFollow = playerCamera.gameObject.GetComponent<CinemachineOrbitalFollow>();
-        playerCamOrbitalFollow.HorizontalAxis.Value = 0;
     }
 
     private void TogglePlayerCameraInput(bool enable)
