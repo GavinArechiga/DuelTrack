@@ -20,7 +20,7 @@ public class UIInputReaderSO : ScriptableObject
         inputSource.PlayerInput.UI.Enable();
         inputSource.PlayerInput.UI.ToggleToolWheel.performed += OnToggleToolWheel;
         inputSource.PlayerInput.UI.SelectTool.performed += OnToolSelected;
-        DisableCursor();
+        //DisableCursor();
     }
     
     private void OnDisable()

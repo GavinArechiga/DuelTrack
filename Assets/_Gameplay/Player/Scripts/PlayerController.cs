@@ -48,11 +48,11 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
-        CameraManager.Instance.OnCameraChange += HandleOnCameraChange;
     }
     
     private void Start()
     {
+        CameraManager.Instance.OnCameraChange += HandleOnCameraChange;
         velocity = characterController.velocity;
         previousRotation = transform.rotation;
     }
