@@ -13,7 +13,7 @@ public class GridSystem : MonoBehaviour
     public event Action<GameObject> OnCurrentObjectChanged; 
     public event Action OnDisableGrid;
     
-    [field: SerializeField] public GameObject CurrentlySelectedObject { get; private set; }
+    public GameObject CurrentlySelectedObject { get; private set; }
     [SerializeField] private Grid grid;
     [SerializeField] private GridObjectListSO gridObjectListSO;
     [SerializeField] private GameObject gridVisual;
@@ -93,6 +93,12 @@ public class GridSystem : MonoBehaviour
         currentCellPosition.y = 0;
         placementDirection = facingDirection;
     }
+
+    public void SetSelectedObject(GameObject selectedObject)
+    {
+        CurrentlySelectedObject = selectedObject;
+        OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
+    }
     
     private void MoveCellIndicator()
     {
@@ -104,6 +110,8 @@ public class GridSystem : MonoBehaviour
     #region Object Placement
     public void PlaceObject()
     {
+        if (!CurrentlySelectedObject) { return; }
+        
         PlacementData data = GetPlacementData();
         
         if (data.HasOverlap) { return; }
@@ -112,6 +120,8 @@ public class GridSystem : MonoBehaviour
         
         GameObject placedObject = Instantiate(CurrentlySelectedObject, data.CellCenter, data.Rotation);
         placedObjects.Add(placedObject, cellPositions);
+
+        CurrentlySelectedObject = null;
         
         OnObjectPlaced?.Invoke();
         OnCurrentObjectChanged?.Invoke(null);
@@ -119,6 +129,10 @@ public class GridSystem : MonoBehaviour
 
     public void RemoveObject()
     {
+        //TODO: Refactor so that we dont need a currently selected object.
+        //TODO: it just removes the object that is in front of the player based on the front cell
+        if (!CurrentlySelectedObject) { return; }
+        
         PlacementData data = GetPlacementData();
         GameObject objectToRemove = null;
         List<Vector3Int> cellPositions = GetCellPositions(data.FrontCell, data.GridSize);

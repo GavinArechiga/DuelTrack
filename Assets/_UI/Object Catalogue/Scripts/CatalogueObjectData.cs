@@ -6,5 +6,6 @@ public class CatalogueObjectData : MonoBehaviour
 {
     public TextMeshProUGUI NameText;
     public Image Image;
+    public Button Button;
 
 }

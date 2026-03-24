@@ -1785,8 +1785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   inputReader: {fileID: 11400000, guid: ab88103decd7b904bbf7e799f6394348, type: 2}
-  cameraManager: {fileID: 0}
-  playerCam: {fileID: 0}
+  playerCamTransform: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
   jumpHeight: 1.5
@@ -1935,8 +1934,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConstructionTool
   toolType: 1
   inputReader: {fileID: 11400000, guid: 6760b59c54b15d84b8ac4530da3ce694, type: 2}
-  cameraManager: {fileID: 0}
   heldItemParent: {fileID: 7922018018571584866}
+  constructionToolActivatedEventChannel: {fileID: 11400000, guid: ce3dc05e44eb5ee4d8906d9ad130b1a1, type: 2}
 --- !u!1 &5752074397514311265
 GameObject:
   m_ObjectHideFlags: 0

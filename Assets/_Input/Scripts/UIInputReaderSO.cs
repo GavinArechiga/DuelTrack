@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 [CreateAssetMenu(fileName = "UIInputReaderSO", menuName = "Scriptable Objects/Input/UIInputReaderSO")]
@@ -20,7 +21,7 @@ public class UIInputReaderSO : ScriptableObject
         inputSource.PlayerInput.UI.Enable();
         inputSource.PlayerInput.UI.ToggleToolWheel.performed += OnToggleToolWheel;
         inputSource.PlayerInput.UI.SelectTool.performed += OnToolSelected;
-        //DisableCursor();
+        DisableCursor();
     }
     
     private void OnDisable()
@@ -41,16 +42,21 @@ public class UIInputReaderSO : ScriptableObject
         inputSource.PlayerInput.Movement.Enable();
     }
     
-    public void EnableCursor()
+    public static void EnableCursor()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
     
-    public void DisableCursor()
+    public static void DisableCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public static bool IsCursorOverUI()
+    {
+        return EventSystem.current.IsPointerOverGameObject();
     }
 
     private void OnToolSelected(InputAction.CallbackContext obj)

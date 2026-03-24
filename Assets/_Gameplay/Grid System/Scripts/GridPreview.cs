@@ -12,7 +12,10 @@ public class GridPreview : MonoBehaviour
     
     private void Update()
     {
-        ShowObjectPreview();
+        if (gridSystem.CurrentlySelectedObject)
+        {
+            ShowObjectPreview();
+        }
     }
 
     private void Start()
@@ -20,8 +23,9 @@ public class GridPreview : MonoBehaviour
         gridSystem.OnObjectPlaced += () => Destroy(previewObject);
         gridSystem.OnObjectRemoved += () => ChangePreviewObjectColor(Color.white);
         gridSystem.OnDisableGrid += HandleDiableGrid;
+        gridSystem.OnCurrentObjectChanged += HandleCurrentObjectChanged;
     }
-    
+
     private void ShowObjectPreview()
     {
         PlacementData data = gridSystem.GetPlacementData();
@@ -43,6 +47,18 @@ public class GridPreview : MonoBehaviour
     {
         Destroy(previewObject);
         lastFrontCellPosition = Vector3Int.zero;
+    }
+    
+    private void HandleCurrentObjectChanged(GameObject currentObject)
+    {
+        if (previewObject)
+        {
+            Destroy(previewObject);
+        }
+        
+        if (!currentObject) { return; }
+        
+        ShowObjectPreview();
     }
     
     private void FixPreviewZFighting()

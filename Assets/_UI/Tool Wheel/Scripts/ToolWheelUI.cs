@@ -50,12 +50,12 @@ public class ToolWheelUI : MonoBehaviour
         if (toolWheelEnabled)
         {
             inputReader.DisableAllButUI();
-            inputReader.EnableCursor();
+            UIInputReaderSO.EnableCursor();
         }
         else
         {
             inputReader.ReEnableMovement();
-            inputReader.DisableCursor();
+            UIInputReaderSO.DisableCursor();
         }
     }
     
@@ -65,7 +65,6 @@ public class ToolWheelUI : MonoBehaviour
         wheelContainer.SetActive(false);
         toggleCameraInputEventChannel.Raise(true);
         inputReader.ReEnableMovement();
-        inputReader.DisableCursor();
     }
     
     private void CalculateSelectedSegment()
@@ -89,6 +88,8 @@ public class ToolWheelUI : MonoBehaviour
     private void SwitchTool()
     {
         if (!toolWheelEnabled) { return; }
+        
+        UIInputReaderSO.DisableCursor();
         switchToolEventChannel.Raise(segmentArray[selectedSegmentIndex].ToolType);
         CloseToolWheel();
     }
