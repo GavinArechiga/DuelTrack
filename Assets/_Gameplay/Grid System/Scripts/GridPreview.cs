@@ -64,16 +64,14 @@ public class GridPreview : MonoBehaviour
     
     private void FixPreviewZFighting()
     {
-        Vector3 upOffset = Vector3.up * 0.01f;
-        Vector3 backOffset = -previewObject.transform.forward * 0.01f;
-        
-        previewObject.transform.position += upOffset + backOffset;
+        previewObject.transform.localScale *= 1.01f;
     }
     
     private void ChangePreviewMaterial(bool hasOverlap)
     {
         Material previewMaterialInstance = Instantiate(previewMaterial);
         previewRenderers = previewObject.GetComponentsInChildren<Renderer>();
+        
         foreach (Renderer rend in previewRenderers)
         {
             rend.material = previewMaterialInstance;

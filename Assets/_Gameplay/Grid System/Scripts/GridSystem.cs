@@ -8,8 +8,6 @@ public class GridSystem : MonoBehaviour
     public static GridSystem Instance { get; private set; }
     public event Action OnObjectPlaced;
     public event Action OnObjectRemoved;
-    // Only when park catalogue UI is ready 
-    //TODO: create a methode for changing current object and actually set the current object to null.
     public event Action<GameObject> OnCurrentObjectChanged; 
     public event Action OnDisableGrid;
     
@@ -129,32 +127,6 @@ public class GridSystem : MonoBehaviour
 
     public void RemoveObject()
     {
-        /*//TODO: Refactor so that we dont need a currently selected object.
-        //TODO: it just removes the object that is in front of the player based on the front cell
-        if (!CurrentlySelectedObject) { return; }
-        
-        PlacementData data = GetPlacementData();
-        GameObject objectToRemove = null;
-        List<Vector3Int> cellPositions = GetCellPositions(data.FrontCell, data.GridSize);
-        
-        // using tuple deconstruction to make this more readable.
-        // if you don't know what that is it just lets you give the key and value a variable name
-        foreach ((GameObject prefab, List<Vector3Int> occupiedCells) in placedObjects)
-        {
-            if (cellPositions.Any(cellPosition => occupiedCells.Contains(cellPosition)))
-            {
-                objectToRemove = prefab;
-            }
-        }
-
-        if (objectToRemove == null) { return; }
-
-        OnCurrentObjectChanged?.Invoke(objectToRemove);
-        placedObjects.Remove(objectToRemove);
-        Destroy(objectToRemove);
-        
-        OnObjectRemoved?.Invoke();*/
-        
         Vector3Int frontCell = GetFrontCell();
         GameObject objectToRemove = null;
 
