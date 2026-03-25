@@ -20,15 +20,15 @@ public class ObjectCatalogue : MonoBehaviour
     {
         constructionToolActivatedEventChannel.AddListener(ToggleCatalogue);
         
-        foreach (GridObjectData gridObject in gridObjectListSO.gridObjects)
+        foreach (GridObjectData gridObject in gridObjectListSO.GridObjects)
         {
             CatalogueObjectData objectUI = Instantiate(objectTemplate, objectContainer.transform);
-            objectUI.NameText.text = gridObject.name;
-            objectUI.Image.sprite = gridObject.sprite;
+            objectUI.NameText.text = gridObject.Name;
+            objectUI.Image.sprite = gridObject.Sprite;
             
             // future proofing for when this needs to be run when the UI is enabled and not just in start
             objectUI.Button.onClick.RemoveAllListeners();
-            objectUI.Button.onClick?.AddListener(() => GridSystem.Instance.SetSelectedObject(gridObject.prefab));
+            objectUI.Button.onClick?.AddListener(() => GridSystem.Instance.SetSelectedObject(gridObject.Prefab));
 
             objectUI.gameObject.SetActive(true);
         }

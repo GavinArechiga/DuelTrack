@@ -24,7 +24,7 @@ public class GridObjectImageGenerator : Editor
         {
             var gridObjectListSO = (GridObjectListSO)target;
 
-            foreach (GridObjectData gridObject in gridObjectListSO.gridObjects)
+            foreach (GridObjectData gridObject in gridObjectListSO.GridObjects)
             {
                 GeneratePrefabImage(gridObject, gridObjectListSO);
             }
@@ -37,12 +37,12 @@ public class GridObjectImageGenerator : Editor
     
     private void GeneratePrefabImage(GridObjectData gridObjectData, GridObjectListSO gridObjectListSO)
     {
-        RenderPrefab(gridObjectData.prefab);
+        RenderPrefab(gridObjectData.Prefab);
 
         const string folderPath = "Assets/_UI/Object Catalogue/Generated Sprites";
         Directory.CreateDirectory(folderPath);
 
-        string path = $"{folderPath}/{gridObjectData.name}.png";
+        string path = $"{folderPath}/{gridObjectData.Name}.png";
 
         File.WriteAllBytes(path, texture2D.EncodeToPNG());
         AssetDatabase.ImportAsset(path);
@@ -53,7 +53,7 @@ public class GridObjectImageGenerator : Editor
         importer.alphaIsTransparency = true;
         importer.SaveAndReimport();
 
-        gridObjectData.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        gridObjectData.Sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
 
         // Tells unity that the asset needs to be refreshed
         EditorUtility.SetDirty(gridObjectListSO);

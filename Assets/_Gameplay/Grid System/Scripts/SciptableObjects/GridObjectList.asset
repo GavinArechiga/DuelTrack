@@ -12,20 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bc82e8cc27729e4298729f0c7b9897e, type: 3}
   m_Name: GridObjectList
   m_EditorClassIdentifier: Assembly-CSharp::GridObjectListSO
-  gridObjects:
-  - name: TestGridObject1x1
-    gridSize: {x: 1, y: 1}
-    prefab: {fileID: 7683273673954475270, guid: 73da7ead7c2231d4e92046f6d088fbf1, type: 3}
-    sprite: {fileID: 21300000, guid: e7b97706c042ecd43b9168306cf0f65f, type: 3}
-  - name: TestGridObject3X1
-    gridSize: {x: 3, y: 1}
-    prefab: {fileID: 7683273673954475270, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
-    sprite: {fileID: 21300000, guid: 45c8314227c265640a0f84661e6f1c24, type: 3}
-  - name: TestGridObject3X2
-    gridSize: {x: 3, y: 2}
-    prefab: {fileID: 7683273673954475270, guid: ac1ead0ab5766224cb87dad54892d073, type: 3}
-    sprite: {fileID: 21300000, guid: 8262a8789d659614eac6cfe56f2e6e2e, type: 3}
-  - name: TestGridObject4x4
-    gridSize: {x: 5, y: 5}
-    prefab: {fileID: 7683273673954475270, guid: d3636398119e3a6419a8b398dd421572, type: 3}
-    sprite: {fileID: 21300000, guid: 1520912f5ed70ec4b807094de4f55137, type: 3}
+  GridObjects:
+  - {fileID: 4987128606721571453, guid: 73da7ead7c2231d4e92046f6d088fbf1, type: 3}
+  - {fileID: 9140941714623795107, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
+  - {fileID: 1009408269718802155, guid: ac1ead0ab5766224cb87dad54892d073, type: 3}
+  - {fileID: 7668850885181059940, guid: d3636398119e3a6419a8b398dd421572, type: 3}

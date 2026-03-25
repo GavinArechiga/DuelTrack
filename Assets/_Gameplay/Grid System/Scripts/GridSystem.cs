@@ -129,7 +129,7 @@ public class GridSystem : MonoBehaviour
 
     public void RemoveObject()
     {
-        //TODO: Refactor so that we dont need a currently selected object.
+        /*//TODO: Refactor so that we dont need a currently selected object.
         //TODO: it just removes the object that is in front of the player based on the front cell
         if (!CurrentlySelectedObject) { return; }
         
@@ -153,7 +153,29 @@ public class GridSystem : MonoBehaviour
         placedObjects.Remove(objectToRemove);
         Destroy(objectToRemove);
         
+        OnObjectRemoved?.Invoke();*/
+        
+        Vector3Int frontCell = GetFrontCell();
+        GameObject objectToRemove = null;
+
+        foreach ((GameObject prefab, List<Vector3Int> cellPositions) in placedObjects )
+        {
+            if (!cellPositions.Contains(frontCell)) { continue; }
+
+            objectToRemove = prefab;
+            break;
+        }
+        
+        if (objectToRemove == null) { return; }
+        
+        var data = objectToRemove.GetComponent<GridObjectData>();
+        CurrentlySelectedObject = gridObjectListSO.GridObjects.Find(gridObject => gridObject.Name == data.Name).Prefab;
+        
+        placedObjects.Remove(objectToRemove);
+        Destroy(objectToRemove);
+        
         OnObjectRemoved?.Invoke();
+        OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
     }
 
     private Vector3 GetCellCenterWorldPosition(Vector3Int cellPosition)
@@ -163,8 +185,8 @@ public class GridSystem : MonoBehaviour
 
     private Vector2Int GetObjectGridSize()
     {
-        return gridObjectListSO.gridObjects.Find(gridObject => 
-            gridObject.prefab == CurrentlySelectedObject).gridSize;
+        return gridObjectListSO.GridObjects.Find(gridObject => 
+            gridObject.Prefab == CurrentlySelectedObject).GridSize;
     }
     
     private bool CheckForOverlap(Vector3Int frontCell, Vector2Int gridSize)

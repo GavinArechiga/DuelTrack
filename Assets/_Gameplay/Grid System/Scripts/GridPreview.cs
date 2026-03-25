@@ -58,6 +58,7 @@ public class GridPreview : MonoBehaviour
         
         if (!currentObject) { return; }
         
+        lastFrontCellPosition = Vector3Int.zero;
         ShowObjectPreview();
     }
     
