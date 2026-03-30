@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3bc82e8cc27729e4298729f0c7b9897e, type: 3}
-  m_Name: GridObjectList
+  m_Name: Test Theme
   m_EditorClassIdentifier: Assembly-CSharp::GridObjectListSO
-  GridObjects:
+  <ThemeName>k__BackingField: Test Theme
+  <GridObjects>k__BackingField:
   - {fileID: 4987128606721571453, guid: 73da7ead7c2231d4e92046f6d088fbf1, type: 3}
   - {fileID: 9140941714623795107, guid: b5d9fb8250c973c43ac3844f6d0e476d, type: 3}
   - {fileID: 1009408269718802155, guid: ac1ead0ab5766224cb87dad54892d073, type: 3}

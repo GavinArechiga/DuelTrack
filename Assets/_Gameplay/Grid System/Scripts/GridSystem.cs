@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GridSystem : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class GridSystem : MonoBehaviour
     
     public GameObject CurrentlySelectedObject { get; private set; }
     [SerializeField] private Grid grid;
-    [SerializeField] private GridObjectListSO gridObjectListSO;
+    [FormerlySerializedAs("gridObjectListSO")] [SerializeField] private ThemeObjectListSO themeObjectListSO;
     [SerializeField] private GameObject gridVisual;
     [SerializeField] private GameObject previewSystem;
     
@@ -141,7 +142,7 @@ public class GridSystem : MonoBehaviour
         if (objectToRemove == null) { return; }
         
         var data = objectToRemove.GetComponent<GridObjectData>();
-        CurrentlySelectedObject = gridObjectListSO.GridObjects.Find(gridObject => gridObject.Name == data.Name).Prefab;
+        CurrentlySelectedObject = themeObjectListSO.GridObjects.Find(gridObject => gridObject.Name == data.Name).Prefab;
         
         placedObjects.Remove(objectToRemove);
         Destroy(objectToRemove);
@@ -157,7 +158,7 @@ public class GridSystem : MonoBehaviour
 
     private Vector2Int GetObjectGridSize()
     {
-        return gridObjectListSO.GridObjects.Find(gridObject => 
+        return themeObjectListSO.GridObjects.Find(gridObject => 
             gridObject.Prefab == CurrentlySelectedObject).GridSize;
     }
     

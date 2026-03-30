@@ -1,4 +1,4 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Events/ToolTypeEventChannel")]
+[CreateAssetMenu(menuName = "Scriptable Objects/Events/Tool Type Event Channel")]
 public class ToolTypeEventChannel : TypedEventChannel<ToolType> {}

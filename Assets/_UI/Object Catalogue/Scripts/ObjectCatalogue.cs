@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -8,36 +10,36 @@ using UnityEngine.UI;
 public class ObjectCatalogue : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GridObjectListSO gridObjectListSO;
     [SerializeField] private GameObject catalogueContainer;
-    [SerializeField] private GameObject objectContainer;
-    [SerializeField] private CatalogueObjectData objectTemplate;
+    [SerializeField] private List<CatalogueTheme> themeList;
     
     [Header("Events")]
     [SerializeField] private BoolEventChannel constructionToolActivatedEventChannel;
-
+    
     private void Start()
     {
         constructionToolActivatedEventChannel.AddListener(ToggleCatalogue);
         
-        foreach (GridObjectData gridObject in gridObjectListSO.GridObjects)
-        {
-            CatalogueObjectData objectUI = Instantiate(objectTemplate, objectContainer.transform);
-            objectUI.NameText.text = gridObject.Name;
-            objectUI.Image.sprite = gridObject.Sprite;
-            
-            // future proofing for when this needs to be run when the UI is enabled and not just in start
-            objectUI.Button.onClick.RemoveAllListeners();
-            objectUI.Button.onClick?.AddListener(() => GridSystem.Instance.SetSelectedObject(gridObject.Prefab));
+        if (themeList.Count == 0) { return; }
 
-            objectUI.gameObject.SetActive(true);
+        foreach (CatalogueTheme theme in themeList)
+        {
+            theme.SetButtonOnClick(() => SwitchTheme(theme));
         }
     }
 
+    private void SwitchTheme(CatalogueTheme newTheme)
+    {
+        foreach (CatalogueTheme theme in themeList.Where(theme => theme != newTheme))
+        {
+            theme.gameObject.SetActive(false);
+        }
+        
+        newTheme.gameObject.SetActive(true);
+    }
+    
     private void ToggleCatalogue(bool enable)
     {
         catalogueContainer.SetActive(enable);
     }
-    
-    
 }

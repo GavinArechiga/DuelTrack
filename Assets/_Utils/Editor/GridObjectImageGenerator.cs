@@ -2,7 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(GridObjectListSO))]
+[CustomEditor(typeof(ThemeObjectListSO))]
 public class GridObjectImageGenerator : Editor
 {
     private RenderTexture renderTexture;
@@ -22,7 +22,7 @@ public class GridObjectImageGenerator : Editor
 
         if (GUILayout.Button("Generate Prefab Images", GUILayout.Height(30)))
         {
-            var gridObjectListSO = (GridObjectListSO)target;
+            var gridObjectListSO = (ThemeObjectListSO)target;
 
             foreach (GridObjectData gridObject in gridObjectListSO.GridObjects)
             {
@@ -35,7 +35,7 @@ public class GridObjectImageGenerator : Editor
         
     }
     
-    private void GeneratePrefabImage(GridObjectData gridObjectData, GridObjectListSO gridObjectListSO)
+    private void GeneratePrefabImage(GridObjectData gridObjectData, ThemeObjectListSO themeObjectListSO)
     {
         RenderPrefab(gridObjectData.Prefab);
 
@@ -56,7 +56,7 @@ public class GridObjectImageGenerator : Editor
         gridObjectData.Sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
 
         // Tells unity that the asset needs to be refreshed
-        EditorUtility.SetDirty(gridObjectListSO);
+        EditorUtility.SetDirty(themeObjectListSO);
     }
 
     private void RenderPrefab(GameObject prefab)
