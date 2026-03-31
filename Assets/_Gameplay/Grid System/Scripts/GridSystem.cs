@@ -13,11 +13,12 @@ public class GridSystem : MonoBehaviour
     public event Action OnDisableGrid;
     
     public GameObject CurrentlySelectedObject { get; private set; }
+    
     [SerializeField] private Grid grid;
-    [FormerlySerializedAs("gridObjectListSO")] [SerializeField] private ThemeObjectListSO themeObjectListSO;
     [SerializeField] private GameObject gridVisual;
     [SerializeField] private GameObject previewSystem;
     
+    private ThemeObjectListSO themeObjectListSO;
     private Vector3Int currentCellPosition;
     private Direction placementDirection;
     private readonly Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
@@ -97,6 +98,11 @@ public class GridSystem : MonoBehaviour
     {
         CurrentlySelectedObject = selectedObject;
         OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
+    }
+
+    public void SetSelectedTheme(ThemeObjectListSO themeObjectListSO)
+    {
+        this.themeObjectListSO = themeObjectListSO;
     }
     
     private void MoveCellIndicator()
