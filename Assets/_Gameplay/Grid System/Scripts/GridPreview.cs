@@ -12,7 +12,10 @@ public class GridPreview : MonoBehaviour
     
     private void Update()
     {
-        ShowObjectPreview();
+        if (gridSystem.CurrentlySelectedObject)
+        {
+            ShowObjectPreview();
+        }
     }
 
     private void Start()
@@ -20,8 +23,9 @@ public class GridPreview : MonoBehaviour
         gridSystem.OnObjectPlaced += () => Destroy(previewObject);
         gridSystem.OnObjectRemoved += () => ChangePreviewObjectColor(Color.white);
         gridSystem.OnDisableGrid += HandleDiableGrid;
+        gridSystem.OnCurrentObjectChanged += HandleCurrentObjectChanged;
     }
-    
+
     private void ShowObjectPreview()
     {
         PlacementData data = gridSystem.GetPlacementData();
@@ -45,18 +49,29 @@ public class GridPreview : MonoBehaviour
         lastFrontCellPosition = Vector3Int.zero;
     }
     
+    private void HandleCurrentObjectChanged(GameObject currentObject)
+    {
+        if (previewObject)
+        {
+            Destroy(previewObject);
+        }
+        
+        if (!currentObject) { return; }
+        
+        lastFrontCellPosition = Vector3Int.zero;
+        ShowObjectPreview();
+    }
+    
     private void FixPreviewZFighting()
     {
-        Vector3 upOffset = Vector3.up * 0.01f;
-        Vector3 backOffset = -previewObject.transform.forward * 0.01f;
-        
-        previewObject.transform.position += upOffset + backOffset;
+        previewObject.transform.localScale *= 1.01f;
     }
     
     private void ChangePreviewMaterial(bool hasOverlap)
     {
         Material previewMaterialInstance = Instantiate(previewMaterial);
         previewRenderers = previewObject.GetComponentsInChildren<Renderer>();
+        
         foreach (Renderer rend in previewRenderers)
         {
             rend.material = previewMaterialInstance;

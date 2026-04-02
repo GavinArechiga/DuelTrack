@@ -1,4 +1,4 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Events/FloatEventChannel")]
+[CreateAssetMenu(menuName = "Scriptable Objects/Events/Float Event Channel")]
 public class FloatEventChannel : TypedEventChannel<float> {}

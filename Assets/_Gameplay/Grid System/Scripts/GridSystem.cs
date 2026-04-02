@@ -2,20 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GridSystem : MonoBehaviour
 {
     public static GridSystem Instance { get; private set; }
     public event Action OnObjectPlaced;
     public event Action OnObjectRemoved;
+    public event Action<GameObject> OnCurrentObjectChanged; 
     public event Action OnDisableGrid;
     
-    [field: SerializeField] public GameObject CurrentlySelectedObject { get; private set; }
+    public GameObject CurrentlySelectedObject { get; private set; }
+    
     [SerializeField] private Grid grid;
-    [SerializeField] private GridObjectListSO gridObjectListSO;
     [SerializeField] private GameObject gridVisual;
     [SerializeField] private GameObject previewSystem;
     
+    private ThemeObjectListSO themeObjectListSO;
     private Vector3Int currentCellPosition;
     private Direction placementDirection;
     private readonly Dictionary<GameObject, List<Vector3Int>> placedObjects = new();
@@ -70,10 +73,12 @@ public class GridSystem : MonoBehaviour
         if (!enable)
         {
             OnDisableGrid?.Invoke();
+            OnCurrentObjectChanged?.Invoke(null);
         }
         else if (showPlayerCellIndicator)
         {
             cellIndicator.SetActive(true);
+            OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
         }
         
         gridVisual.SetActive(enable);
@@ -88,6 +93,17 @@ public class GridSystem : MonoBehaviour
         currentCellPosition.y = 0;
         placementDirection = facingDirection;
     }
+
+    public void SetSelectedObject(GameObject selectedObject)
+    {
+        CurrentlySelectedObject = selectedObject;
+        OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
+    }
+
+    public void SetSelectedTheme(ThemeObjectListSO themeObjectListSO)
+    {
+        this.themeObjectListSO = themeObjectListSO;
+    }
     
     private void MoveCellIndicator()
     {
@@ -99,6 +115,8 @@ public class GridSystem : MonoBehaviour
     #region Object Placement
     public void PlaceObject()
     {
+        if (!CurrentlySelectedObject) { return; }
+        
         PlacementData data = GetPlacementData();
         
         if (data.HasOverlap) { return; }
@@ -107,32 +125,36 @@ public class GridSystem : MonoBehaviour
         
         GameObject placedObject = Instantiate(CurrentlySelectedObject, data.CellCenter, data.Rotation);
         placedObjects.Add(placedObject, cellPositions);
+
+        CurrentlySelectedObject = null;
         
         OnObjectPlaced?.Invoke();
+        OnCurrentObjectChanged?.Invoke(null);
     }
 
     public void RemoveObject()
     {
-        PlacementData data = GetPlacementData();
+        Vector3Int frontCell = GetFrontCell();
         GameObject objectToRemove = null;
-        List<Vector3Int> cellPositions = GetCellPositions(data.FrontCell, data.GridSize);
-        
-        // using tuple deconstruction to make this more readable.
-        // if you don't know what that is it just lets you give the key and value a variable name
-        foreach ((GameObject prefab, List<Vector3Int> occupiedCells) in placedObjects)
+
+        foreach ((GameObject prefab, List<Vector3Int> cellPositions) in placedObjects )
         {
-            if (cellPositions.Any(cellPosition => occupiedCells.Contains(cellPosition)))
-            {
-                objectToRemove = prefab;
-            }
+            if (!cellPositions.Contains(frontCell)) { continue; }
+
+            objectToRemove = prefab;
+            break;
         }
-
+        
         if (objectToRemove == null) { return; }
-
+        
+        var data = objectToRemove.GetComponent<GridObjectData>();
+        CurrentlySelectedObject = themeObjectListSO.GridObjects.Find(gridObject => gridObject.Name == data.Name).Prefab;
+        
         placedObjects.Remove(objectToRemove);
         Destroy(objectToRemove);
         
         OnObjectRemoved?.Invoke();
+        OnCurrentObjectChanged?.Invoke(CurrentlySelectedObject);
     }
 
     private Vector3 GetCellCenterWorldPosition(Vector3Int cellPosition)
@@ -142,8 +164,8 @@ public class GridSystem : MonoBehaviour
 
     private Vector2Int GetObjectGridSize()
     {
-        return gridObjectListSO.gridObjects.Find(gridObject => 
-            gridObject.prefab == CurrentlySelectedObject).gridSize;
+        return themeObjectListSO.GridObjects.Find(gridObject => 
+            gridObject.Prefab == CurrentlySelectedObject).GridSize;
     }
     
     private bool CheckForOverlap(Vector3Int frontCell, Vector2Int gridSize)
