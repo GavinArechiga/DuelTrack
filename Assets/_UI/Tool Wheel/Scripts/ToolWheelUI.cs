@@ -1,19 +1,22 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class ToolWheelUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private UIInputReaderSO inputReader;
-    [SerializeField] private BoolEventChannel toggleCameraInputEventChannel;
-    [SerializeField] private ToolTypeEventChannel switchToolEventChannel;
     [SerializeField] private GameObject wheelContainer;
     [SerializeField] private SegmentData[] segmentArray;
     
     [Header("Settings")]
     [SerializeField] private Color normalColor;
     [SerializeField] private Color selectedColor;
+    
+    [Header("Events")]
+    [SerializeField] private BoolEventChannel toggleToolWheelEventChannel;
+    [SerializeField] private ToolTypeEventChannel switchToolEventChannel;
     
     private bool toolWheelEnabled;
     private int selectedSegmentIndex;
@@ -45,7 +48,7 @@ public class ToolWheelUI : MonoBehaviour
         toolWheelEnabled = !toolWheelEnabled;
         wheelContainer.SetActive(toolWheelEnabled);
         // camera input starts enabled so we need to flip the enable/disable logic
-        toggleCameraInputEventChannel.Raise(!toolWheelEnabled);
+        toggleToolWheelEventChannel.Raise(!toolWheelEnabled);
 
         if (toolWheelEnabled)
         {
@@ -63,7 +66,7 @@ public class ToolWheelUI : MonoBehaviour
     {
         toolWheelEnabled = false;
         wheelContainer.SetActive(false);
-        toggleCameraInputEventChannel.Raise(true);
+        toggleToolWheelEventChannel.Raise(true);
         inputReader.ReEnableMovement();
     }
     

@@ -8,6 +8,7 @@ public class ConstructionTool : Tool
     [SerializeField] private Transform heldItemParent;
 
     [Header("Events")]
+    // TODO: replace with a shared event channel for all tools that passes along what tool it is
     [SerializeField] private BoolEventChannel constructionToolActivatedEventChannel;
     
     private GameObject heldItem;

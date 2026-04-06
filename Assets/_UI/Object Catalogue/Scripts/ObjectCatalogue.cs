@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 public class ObjectCatalogue : MonoBehaviour
 {
@@ -20,10 +13,14 @@ public class ObjectCatalogue : MonoBehaviour
     
     [Header("Events")]
     [SerializeField] private BoolEventChannel constructionToolActivatedEventChannel;
+    [SerializeField] private BoolEventChannel toggleToolWheelEventChannel;
+    
+    private bool constructionToolIsActive;
     
     private void Start()
     {
-        constructionToolActivatedEventChannel.AddListener(ToggleCatalogue);
+        constructionToolActivatedEventChannel.AddListener(OnConstructionToolActivated);
+        toggleToolWheelEventChannel.AddListener(ToggleCatalogue);
         
         if (themeList.Count == 0) { return; }
         
@@ -57,8 +54,18 @@ public class ObjectCatalogue : MonoBehaviour
        Search(searchString);
     }
     
+    private void OnConstructionToolActivated(bool isActive)
+    {
+        constructionToolIsActive = isActive;
+        
+        ToggleCatalogue(constructionToolIsActive);
+    }
+    
     private void ToggleCatalogue(bool enable)
     {
-        catalogueContainer.SetActive(enable);
+        if (constructionToolIsActive)
+        {
+            catalogueContainer.SetActive(enable);
+        }
     }
 }

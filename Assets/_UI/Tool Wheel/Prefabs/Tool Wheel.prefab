@@ -410,8 +410,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToolWheelUI
   inputReader: {fileID: 11400000, guid: bb28a2f6f0f65db4aa6202cb31573a0f, type: 2}
-  toggleCameraInputEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
-  switchToolEventChannel: {fileID: 11400000, guid: ffa3b93341b4a724a861902a4fa61e10, type: 2}
   wheelContainer: {fileID: 1349972519924323415}
   segmentArray:
   - {fileID: 8529915612751496876}
@@ -424,6 +422,8 @@ MonoBehaviour:
   - {fileID: 5648581196865400578}
   normalColor: {r: 0.8470589, g: 1, b: 1, a: 1}
   selectedColor: {r: 0.21488346, g: 0.19939902, b: 0.86522907, a: 1}
+  toggleToolWheelEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
+  switchToolEventChannel: {fileID: 11400000, guid: ffa3b93341b4a724a861902a4fa61e10, type: 2}
 --- !u!1 &3042862390375278253
 GameObject:
   m_ObjectHideFlags: 0
