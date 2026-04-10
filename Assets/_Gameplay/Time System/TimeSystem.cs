@@ -3,22 +3,40 @@ using UnityEngine;
 
 public class TimeSystem : MonoBehaviour
 {
-     [SerializeField, Tooltip("How long one tick is")] private float tickTime = 7;
+     [SerializeField, Tooltip("How long one tick is")] private float tickTime = 1;
      
      public static TimeSystem Instance { get; private set; }
      
      public event Action OnTick;
+     public event Action OnNewDay;
      
-     public string DayName => gameTime.DayName;
-     public int Days => gameTime.Days;
-     public int Hours => gameTime.Hours;
-     public int Minutes => gameTime.Minutes;
-     public bool IsAm => gameTime.IsAm;
+     // It is important that these properties stay read-only.
+     // if they are set directly, then it con break the time calculation. Use the public methods instead. 
+     
+     // The DayName property ensures the day name and the index are always in sync.
+     // This value cannot be set directly,
+     // instead change the current-day index, and the day name will update automatically.
+     public string DayName => dayNames[currentDayIndex];
+     public int Days { get; private set; } = 1;
+     public int Hours { get; private set; } = 6;
+     public int Minutes  { get; private set; }
+     public bool IsAm { get; private set; } = true;
+     public bool IsPaused { get; private set; }
      
      private float elapsedTime;
-     private readonly GameTime gameTime = new();
-
-
+     private int currentDayIndex;
+     
+     private readonly string[] dayNames =
+     {
+         "Monday",
+         "Tuesday",
+         "Wednesday",
+         "Thursday",
+         "Friday",
+         "Saturday",
+         "Sunday",
+     };
+     
      private void Awake()
      {
          if (Instance != null && Instance != this) 
@@ -30,15 +48,16 @@ public class TimeSystem : MonoBehaviour
              Instance = this; 
          } 
      }
-
-
-     private void Update()
+     
+    private void Update()
     {
         UpdateTimer();
     }
-
+    
     private void UpdateTimer()
     {
+        if (IsPaused) { return; }
+        
         elapsedTime += Time.deltaTime;
         
         if (elapsedTime >= tickTime)
@@ -50,7 +69,76 @@ public class TimeSystem : MonoBehaviour
     private void Tick()
     {
         elapsedTime = 0;
-        gameTime.AddMinutes(1);
+        AddMinutes(1);
         OnTick?.Invoke();
+    }
+    
+    private void CalculateTime()
+    {
+        if (Minutes >= 60)
+        {
+            Minutes = 0;
+            Hours += 1;
+        }
+        
+        if (Hours > 12)
+        {
+            Hours = 1;
+        }
+        
+        CalculateDayRollover();
+    }
+
+    private void CalculateDayRollover()
+    {
+        if (Hours == 12 && Minutes == 0)
+        {
+            IsAm = !IsAm;
+            
+            // if just switched from PM -> AM, it's a new day
+            if (IsAm)
+            {
+                Days += 1;
+
+                if (Days > 30)
+                {
+                    Days = 1;
+                }
+
+                currentDayIndex = (currentDayIndex + 1) % dayNames.Length;
+                OnNewDay?.Invoke();
+            }
+        }
+    }
+    
+    // some of these functions are not called and were added to future-proof the time system.
+    // if they are not needed, then you can remove them.
+    
+    public void AddDays(int days)
+    {
+        Days += days;
+        CalculateTime();
+    }
+
+    public void AddHours(int hours)
+    {
+        Hours += hours;
+        CalculateTime();
+    }
+    
+    public void AddMinutes(int minutes)
+    {
+        Minutes += minutes;
+        CalculateTime();
+    }
+
+    public void Pause()
+    {
+        IsPaused = true;
+    }
+
+    public void UnPause()
+    {
+        IsPaused = false;
     }
 }
