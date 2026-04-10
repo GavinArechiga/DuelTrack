@@ -30,6 +30,11 @@ public class ToolManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        switchToolEventChannel.RemoveListener(SwitchTool);
+    }
+
     private void Update()
     {
         if (currentTool)

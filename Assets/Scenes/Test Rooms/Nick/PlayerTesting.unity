@@ -364,62 +364,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameClockUI
   dateText: {fileID: 1227556320}
   timeText: {fileID: 899446384}
---- !u!1 &748769433
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 748769435}
-  - component: {fileID: 748769434}
-  m_Layer: 0
-  m_Name: TimeSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &748769434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748769433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98f2847a85a434d419906ef85111afba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimeSystem
-  tickTime: 1
---- !u!4 &748769435
+--- !u!4 &748769435 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+  m_PrefabInstance: {fileID: 5464204265548459094}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 748769433}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.72895, y: 0, z: 0.76998}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 935367637}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &870904387 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7225709180910056044, guid: 3462bc77db4541643b98c389530e727b, type: 3}
-  m_PrefabInstance: {fileID: 4084768181067993532}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 759a8086c4598084abfedd0d03e7e9dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraManager
 --- !u!4 &870904388 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7312132943123626633, guid: 3462bc77db4541643b98c389530e727b, type: 3}
@@ -1760,6 +1709,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+--- !u!1001 &5464204265548459094
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 935367637}
+    m_Modifications:
+    - target: {fileID: 1339729669717402741, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_Name
+      value: TimeSystem
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.72895
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.76998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
 --- !u!1001 &7931620228591272106
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1826,14 +1832,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3059139494034766862, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
-      propertyPath: playerCam
-      value: 
-      objectReference: {fileID: 326477503}
-    - target: {fileID: 3059139494034766862, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
-      propertyPath: cameraManager
-      value: 
-      objectReference: {fileID: 870904387}
-    - target: {fileID: 3059139494034766862, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
       propertyPath: playerCamTransform
       value: 
       objectReference: {fileID: 326477503}
@@ -1881,14 +1879,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5222917318321859505, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5542721749609089341, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
-      propertyPath: cameraManager
-      value: 
-      objectReference: {fileID: 870904387}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
