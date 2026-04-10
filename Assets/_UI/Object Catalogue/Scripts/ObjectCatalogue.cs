@@ -35,7 +35,8 @@ public class ObjectCatalogue : MonoBehaviour
 
     private void OnDestroy()
     {
-        constructionToolActivatedEventChannel.RemoveListener(ToggleCatalogue);
+        constructionToolActivatedEventChannel.RemoveListener(OnConstructionToolActivated);
+        toggleToolWheelEventChannel.RemoveListener(ToggleCatalogue);
     }
 
     public void Search(string searchString)

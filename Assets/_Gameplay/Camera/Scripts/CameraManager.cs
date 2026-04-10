@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine.Serialization;
 
 public class CameraManager : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private CinemachineCamera buildCamera;
     
     [Header("Events")]
-    [SerializeField] private BoolEventChannel toggleCameraInputEventChannel;
+    [SerializeField] private BoolEventChannel toggleToolWheelEventChannel;
     
     public static CameraManager Instance  { get; private set; }
 
@@ -28,10 +29,15 @@ public class CameraManager : MonoBehaviour
             Instance = this; 
         } 
         
-        toggleCameraInputEventChannel.AddListener(TogglePlayerCameraInput);
+        toggleToolWheelEventChannel.AddListener(TogglePlayerCameraInput);
         inputComponent = playerCamera.GetComponent<CinemachineInputAxisController>();
     }
-    
+
+    private void OnDestroy()
+    {
+        toggleToolWheelEventChannel.RemoveListener(TogglePlayerCameraInput);
+    }
+
     public void SwitchCamera(CameraType cameraType)
     {
         switch (cameraType)

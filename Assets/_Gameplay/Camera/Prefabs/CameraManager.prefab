@@ -143,7 +143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraManager
   playerCamera: {fileID: 1243232800314417256}
   buildCamera: {fileID: 1109874457834979401}
-  toggleCameraInputEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
+  toggleToolWheelEventChannel: {fileID: 11400000, guid: 1c7213ef8cf9db143995f5ab67a3e1b4, type: 2}
 --- !u!1 &6408242633232010206
 GameObject:
   m_ObjectHideFlags: 0
