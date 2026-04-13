@@ -7,7 +7,7 @@ public class TimeSystem : MonoBehaviour
      
      public static TimeSystem Instance { get; private set; }
      
-     public event Action OnTick;
+     public event Action<GameTime> OnTick;
      public event Action OnNewDay;
      
      // It is important that these properties stay read-only.
@@ -19,6 +19,7 @@ public class TimeSystem : MonoBehaviour
      public string DayName => dayNames[currentDayIndex];
      public int Days { get; private set; } = 1;
      public int Hours { get; private set; } = 6;
+     public int Hours24 => GetHours24();
      public int Minutes  { get; private set; }
      public bool IsAm { get; private set; } = true;
      public bool IsPaused { get; private set; }
@@ -70,7 +71,18 @@ public class TimeSystem : MonoBehaviour
     {
         elapsedTime = 0;
         AddMinutes(1);
-        OnTick?.Invoke();
+
+        var gameTime = new GameTime
+        {
+            DayName = this.DayName,
+            Days = this.Days,
+            Hours = this.Hours,
+            Hours24 =  this.Hours24,
+            Minutes = this.Minutes,
+            IsAm = this.IsAm,
+        };
+        
+        OnTick?.Invoke(gameTime);
     }
     
     private void CalculateTime()
@@ -109,6 +121,24 @@ public class TimeSystem : MonoBehaviour
                 OnNewDay?.Invoke();
             }
         }
+    }
+
+    private int GetHours24()
+    {
+        // Returns hours converted to 24-hour time
+        
+        int hours24;
+        
+        if (IsAm)
+        {
+            hours24 = (Hours == 12) ? 0 : Hours;
+        }
+        else
+        {
+            hours24 = (Hours == 12) ? 12 : Hours + 12;
+        }
+        
+        return hours24;
     }
     
     // some of these functions are not called and were added to future-proof the time system.
