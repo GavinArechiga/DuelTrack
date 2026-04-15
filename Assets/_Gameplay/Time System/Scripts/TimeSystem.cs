@@ -17,6 +17,7 @@ public class TimeSystem : MonoBehaviour
      // This value cannot be set directly,
      // instead change the current-day index, and the day name will update automatically.
      public string DayName => dayNames[currentDayIndex];
+     public float TickProgress => elapsedTime / tickTime;
      public int Days { get; private set; } = 1;
      public int Hours { get; private set; } = 6;
      public int Hours24 => GetHours24();

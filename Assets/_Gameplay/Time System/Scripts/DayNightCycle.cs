@@ -3,29 +3,82 @@ using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour
 {
-    //TODO: Interpolate between ticks instead of only updating every tick
-    
+    [Header("Lighting")]
     [SerializeField] private Light sunLight;
+    // graphs the intensity throughout the day, set in the inspector.
+    // x-axis = current time out of 24 hours
+    // y-axis = intensity value. Max intensity should be 1
+    [SerializeField] private AnimationCurve intensityCurve;
     [SerializeField] private float minDarknessLevel = 0.2f;
     [Header("Color")]
     [SerializeField] private Color dayColor;
     [SerializeField] private Color nightColor;
+    // graphs the color of the direction light throughout the day, set in the inspector.
+    // x-axis = current time out of 24 hours.
+    // y-axis = what percentage we are at from the day color to the night color.
+    // 1 would be full night color and 0 would be full-day color
     [SerializeField] private AnimationCurve colorCurve;
+    
+    private bool hasInitialized;
+    private float previousDayPercentage;
+    private float currentDayPercentage;
 
     private void Start()
     {
         TimeSystem.Instance.OnTick += HandleOnTick;
     }
 
+    private void OnDestroy()
+    {
+        TimeSystem.Instance.OnTick -= HandleOnTick;
+    }
+
+    private void Update()
+    {
+        // The day/night cycle looks really choppy if we completely tie it to the tick rate, and we have a low tick rate.
+        // to fix this, we calculate an interpolated percentage every frame up until the current percentage that is tied to the tick rate.
+        // When the percentage changes from the tick rate, we then lerp from the old percentage to the new one based on tick progress. 
+        if (!hasInitialized) { return; }
+        
+        float tickProgress = TimeSystem.Instance.TickProgress;
+        
+        float previousPercentage = previousDayPercentage;
+        float currentPercentage = currentDayPercentage;
+
+        // small fix for when we wrap from PM -> AM
+        if (currentPercentage < previousPercentage)
+        {
+            currentPercentage += 1f;
+        }
+        
+        // % 1 wraps the value around back to 0 if it is greater than 1
+        float interpolatedPercentage = Mathf.Lerp(previousPercentage, 
+            currentPercentage, tickProgress) % 1f;
+        
+        CalculateSunRotation(interpolatedPercentage);
+        CalculateLightIntensity(interpolatedPercentage);
+        
+        sunLight.color = Color.Lerp(
+            dayColor,
+            nightColor,
+            colorCurve.Evaluate(interpolatedPercentage * 24f)
+        );
+    }
+
     private void HandleOnTick(GameTime gameTime)
     {
-        float dayPercentage = CalculateDayPercentage(gameTime);
+        float newPercentage = CalculateDayPercentage(gameTime);
         
-        CalculateSunRotation(dayPercentage);
-        CalculateLightIntensity(dayPercentage);
+        if (!hasInitialized)
+        {
+           previousDayPercentage = newPercentage;
+           currentDayPercentage = newPercentage;
+           hasInitialized = true;
+           return;
+        }
         
-        sunLight.color = Color.Lerp(dayColor, nightColor, colorCurve.Evaluate(
-            gameTime.Hours24 + gameTime.Minutes / 60f));
+        previousDayPercentage = currentDayPercentage;
+        currentDayPercentage = newPercentage;
     }
 
     private float CalculateDayPercentage(GameTime gameTime)
@@ -46,15 +99,14 @@ public class DayNightCycle : MonoBehaviour
     
     private void CalculateLightIntensity(float dayPercentage)
     {
-        // Increases from 0 -> 1 during the day and 1 -> 0 during the night
-        float intensity = Mathf.Sin(dayPercentage * Mathf.PI);
-        intensity = Mathf.Clamp(intensity, 0f, 1f);
+        float intensity = intensityCurve.Evaluate(dayPercentage * 24);
         
         sunLight.intensity = intensity;
         sunLight.bounceIntensity = intensity;
 
         float ambientIntensity = Mathf.Clamp(intensity, minDarknessLevel, 1);
         
+        // because of URP we need to set the ambient and reflection intensity to make the scene darker at night
         RenderSettings.ambientIntensity = ambientIntensity;
         RenderSettings.reflectionIntensity = ambientIntensity;
     }

@@ -1725,10 +1725,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TimeSystem
       objectReference: {fileID: 0}
-    - target: {fileID: 2378566952504847187, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
-      propertyPath: tickTime
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 4270251174656804683, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
+      propertyPath: sunLight
+      value: 
+      objectReference: {fileID: 958492464}
     - target: {fileID: 4589480900308387116, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1772,83 +1772,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1339729669717402741, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5464204265548459096}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
---- !u!1 &5464204265548459095 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1339729669717402741, guid: 743ec2fa27e7f16419a57fb77c48f99a, type: 3}
-  m_PrefabInstance: {fileID: 5464204265548459094}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5464204265548459096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5464204265548459095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea8176b84dc6a634ba71c19ed51ce978, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DayNightCycle
-  sunLight: {fileID: 958492464}
-  minDarknessLevel: 0.2
-  dayColor: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  nightColor: {r: 0.052113205, g: 0.016779112, b: 0.40161723, a: 1}
-  colorCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 6
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 11
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 18
-      value: 0.5
-      inSlope: 0.26767197
-      outSlope: 0.26767197
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.118338995
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 24
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 1
-    m_RotationOrder: 4
 --- !u!1001 &7931620228591272106
 PrefabInstance:
   m_ObjectHideFlags: 0
