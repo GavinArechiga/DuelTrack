@@ -28,6 +28,14 @@ public class PlayerVisual : MonoBehaviour
         playerController.OnPlayerFall += PlayFreeFallAnimation;
     }
 
+    private void OnDestroy()
+    {
+        playerController.OnPlayerMove -= SetMovementBlend;
+        playerController.OnPlayerLand -= PlayLandAnimation;
+        playerController.OnPlayerJump -= PlayJumpAnimation;
+        playerController.OnPlayerFall -= PlayFreeFallAnimation;
+    }
+
     private void Start()
     {
         animator.SetFloat(MotionSpeedID, 1);

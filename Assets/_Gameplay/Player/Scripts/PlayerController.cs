@@ -16,10 +16,9 @@ public class PlayerController : MonoBehaviour
     #region Movement Variables
 
     public Direction CurrentFacingDirection { get; private set; } = Direction.North;
-    private bool playerCameraActive  = true;
+
     [Header("References")]
     [SerializeField] private MovementInputReaderSO inputReader;
-    [SerializeField] private Transform playerCamTransform;
     [Header("Settings")]
     [SerializeField] private float walkSpeed = 3;
     [SerializeField] private float runSpeed = 6;
@@ -43,11 +42,13 @@ public class PlayerController : MonoBehaviour
     #endregion
     
     private CharacterController characterController;
+    private MovementMode currentMovementMode;
     
     
     private void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        SwitchMovementMode(MovementModeType.ThirdPerson);
     }
     
     private void Start()
@@ -55,6 +56,11 @@ public class PlayerController : MonoBehaviour
         CameraManager.Instance.OnCameraChange += HandleOnCameraChange;
         velocity = characterController.velocity;
         previousRotation = transform.rotation;
+    }
+
+    private void OnDestroy()
+    {
+        CameraManager.Instance.OnCameraChange -= HandleOnCameraChange;
     }
 
     private void Update()
@@ -66,30 +72,40 @@ public class PlayerController : MonoBehaviour
     
     private void HandleOnCameraChange(CameraType cameraType)
     {
-        playerCameraActive = cameraType == CameraType.PlayerCamera;
+        switch (cameraType)
+        {
+            case CameraType.PlayerCamera:
+                SwitchMovementMode(MovementModeType.ThirdPerson);
+                break;
+            case CameraType.BuildCamera:
+                SwitchMovementMode(MovementModeType.ConstructionTool);
+                break;
+            default:
+                SwitchMovementMode(MovementModeType.ThirdPerson);
+                Debug.LogWarning("The passed in camera type does not exist. Defaulting to ThirdPerson movement mode.");
+                break;
+        }
     }
     
     #region Movement
+
+    public void SwitchMovementMode(MovementModeType mode)
+    {
+        currentMovementMode = mode switch
+        {
+            MovementModeType.ThirdPerson => new ThirdPersonMovementMode(),
+            MovementModeType.ConstructionTool => new ConstructionToolMovementMode(),
+            _ => currentMovementMode,
+        };
+    }
+    
     private void Move()
     {
         Vector2 input = inputReader.InputVector.normalized;
-
-        // removes the y so the camera tilt does not affect movement. Also makes sure both forward and right are perpendicular to avoid having any skew. 
-        Vector3 camForward = Vector3.ProjectOnPlane(playerCamTransform.forward, Vector3.up).normalized;
-        Vector3 camRight   = Vector3.Cross(Vector3.up, camForward);
-
-        Vector3 moveDir;
+        Vector3 moveDir = currentMovementMode.Move(input);
         
-        if (playerCameraActive)
-        {
-            // creates camera relative movement by multiplying the cameras right and forward axis by the input
-            moveDir = camRight * input.x + camForward * input.y;
-        }
-        else
-        {
-            moveDir = new Vector3(input.x, 0, input.y).normalized;
-        }
-
+        //TODO: Move other parts of the move function into movement modes as needed
+        
         // only rotate player if pressing button
         const float rotationInputThreshold = 0.1f;
         if (moveDir.sqrMagnitude > rotationInputThreshold)

@@ -40,7 +40,7 @@ public class ConstructionTool : Tool
     public override void Enter()
     {
         inputReader.EnableInput();
-        CameraManager.Instance.SwitchCamera(CameraType.TopDownCamera);
+        CameraManager.Instance.SwitchCamera(CameraType.BuildCamera);
         GridSystem.Instance.EnableGrid(true);
         constructionToolActivatedEventChannel.Raise(true);
         UIInputReaderSO.EnableCursor();
