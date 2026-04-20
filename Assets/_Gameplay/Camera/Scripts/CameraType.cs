@@ -1,5 +1,5 @@
 ﻿public enum CameraType
 {
     PlayerCamera,
-    TopDownCamera,
+    BuildCamera,
 }

@@ -13,6 +13,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private BoolEventChannel toggleToolWheelEventChannel;
     
     public static CameraManager Instance  { get; private set; }
+    public Transform PlayerCameraTransform => playerCamera.transform;
 
     public event Action<CameraType> OnCameraChange;
     
@@ -45,7 +46,7 @@ public class CameraManager : MonoBehaviour
             case CameraType.PlayerCamera:
                 EnablePlayerCamera();
                 break;
-            case CameraType.TopDownCamera:
+            case CameraType.BuildCamera:
                 EnableTopDownCamera();
                 break;
             default:
