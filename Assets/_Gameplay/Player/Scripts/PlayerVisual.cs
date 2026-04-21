@@ -11,6 +11,8 @@ public class PlayerVisual : MonoBehaviour
     private static readonly int JumpID = Animator.StringToHash("Jump");
     private static readonly int GroundedID = Animator.StringToHash("Grounded");
     private static readonly int FreeFallID = Animator.StringToHash("FreeFall");
+    private static readonly int OnCleanupToolEnteredID = Animator.StringToHash("OnCleanupToolEntered");
+    private static readonly int CleanupToolExitedID = Animator.StringToHash("OnCleanupToolExited");
 
 
     private PlayerController playerController;
@@ -67,5 +69,18 @@ public class PlayerVisual : MonoBehaviour
     {
         animator.SetBool(GroundedID, false);
         animator.SetBool(FreeFallID, true);
+    }
+    
+    // Clean up tool
+
+    // TODO: Replace with events
+    public void OnCleanupToolEntered()
+    {
+        animator.SetTrigger(OnCleanupToolEnteredID);
+    }
+    
+    public void OnCleanupToolExited()
+    {
+        animator.SetTrigger(CleanupToolExitedID);
     }
 }

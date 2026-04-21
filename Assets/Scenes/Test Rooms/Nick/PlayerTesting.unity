@@ -308,11 +308,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318428360}
   m_CullTransparentMesh: 1
---- !u!4 &326477503 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
-  m_PrefabInstance: {fileID: 4084768181067993532}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &732395353
 GameObject:
   m_ObjectHideFlags: 0
@@ -1419,15 +1414,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6219347119773906987, guid: c38c8b10b36a338498370ae97ee304e8, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.021859305
+      value: 0.021859279
       objectReference: {fileID: 0}
     - target: {fileID: 6219347119773906987, guid: c38c8b10b36a338498370ae97ee304e8, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 3.4049613e-10
+      value: -3.823688e-10
       objectReference: {fileID: 0}
     - target: {fileID: 6219347119773906987, guid: c38c8b10b36a338498370ae97ee304e8, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -7.444788e-12
+      value: 8.360305e-12
       objectReference: {fileID: 0}
     - target: {fileID: 6219347119773906987, guid: c38c8b10b36a338498370ae97ee304e8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1660,6 +1655,34 @@ PrefabInstance:
       propertyPath: Target.TrackingTarget
       value: 
       objectReference: {fileID: 922254915}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7739999
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.99976104
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.02185928
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -4.0413112e-10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3448291907094340605, guid: 3462bc77db4541643b98c389530e727b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0000000010036845
+      objectReference: {fileID: 0}
     - target: {fileID: 4611498594064235169, guid: 3462bc77db4541643b98c389530e727b, type: 3}
       propertyPath: m_Name
       value: CameraManager
@@ -1839,10 +1862,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3059139494034766862, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
-      propertyPath: playerCamTransform
-      value: 
-      objectReference: {fileID: 326477503}
     - target: {fileID: 4782350662894866667, guid: 53c673bb60dec2e4fac8389b5492594b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

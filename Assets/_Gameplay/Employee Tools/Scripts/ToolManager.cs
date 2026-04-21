@@ -7,11 +7,13 @@ public enum ToolType
 {
     None,
     Construction,
+    Cleanup,
 }
 
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private PlayerVisual playerVisual;
     [SerializeField] private ToolTypeEventChannel switchToolEventChannel;
     [SerializeField] private Tool[] toolArray;
     
@@ -26,7 +28,7 @@ public class ToolManager : MonoBehaviour
 
         foreach (Tool tool in toolArray)
         {
-            tool.Initialize(playerController);
+            tool.Initialize(playerController, playerVisual);
         }
     }
 
