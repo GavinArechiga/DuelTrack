@@ -35,7 +35,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight;
     private readonly float gravity = Physics.gravity.y;
     private Vector3 velocity;
-
     private bool wasGrounded;
     private bool fallTriggered;
 

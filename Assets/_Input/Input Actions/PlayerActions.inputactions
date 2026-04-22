@@ -163,6 +163,34 @@
             ]
         },
         {
+            "name": "Cleanup Tool",
+            "id": "5604e4b5-6561-4616-b196-fab50efb14b3",
+            "actions": [
+                {
+                    "name": "ToggleMount",
+                    "type": "Button",
+                    "id": "6fa29f68-8cbd-4067-bec7-8e8c00a6157c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8f80d737-55dd-4d93-b5e4-4357c3bf775c",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard & Mouse",
+                    "action": "ToggleMount",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "UI",
             "id": "6ffc272f-c7c1-40d5-b3df-a7c5c2090a57",
             "actions": [

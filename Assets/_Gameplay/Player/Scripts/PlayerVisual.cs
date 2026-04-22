@@ -5,7 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 public class PlayerVisual : MonoBehaviour
 {
-    private Animator animator;
+    [SerializeField] private Animator animator;
+    [SerializeField] private PlayerController playerController;
+    
     private static readonly int SpeedID = Animator.StringToHash("Speed");
     private static readonly int MotionSpeedID = Animator.StringToHash("MotionSpeed");
     private static readonly int JumpID = Animator.StringToHash("Jump");
@@ -13,21 +15,17 @@ public class PlayerVisual : MonoBehaviour
     private static readonly int FreeFallID = Animator.StringToHash("FreeFall");
     private static readonly int OnCleanupToolEnteredID = Animator.StringToHash("OnCleanupToolEntered");
     private static readonly int CleanupToolExitedID = Animator.StringToHash("OnCleanupToolExited");
-
-
-    private PlayerController playerController;
-
+    
     private float lastBlendSpeed;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        playerController = GetComponent<PlayerController>();
-
         playerController.OnPlayerMove += SetMovementBlend;
         playerController.OnPlayerLand += PlayLandAnimation;
         playerController.OnPlayerJump += PlayJumpAnimation;
         playerController.OnPlayerFall += PlayFreeFallAnimation;
+        
+        CleanupTool.OnToggleMount += HandleToggleMount;
     }
 
     private void OnDestroy()
@@ -36,6 +34,8 @@ public class PlayerVisual : MonoBehaviour
         playerController.OnPlayerLand -= PlayLandAnimation;
         playerController.OnPlayerJump -= PlayJumpAnimation;
         playerController.OnPlayerFall -= PlayFreeFallAnimation;
+        
+        CleanupTool.OnToggleMount -= HandleToggleMount;
     }
 
     private void Start()
@@ -73,14 +73,8 @@ public class PlayerVisual : MonoBehaviour
     
     // Clean up tool
 
-    // TODO: Replace with events
-    public void OnCleanupToolEntered()
+    private void HandleToggleMount(bool toggle)
     {
-        animator.SetTrigger(OnCleanupToolEnteredID);
-    }
-    
-    public void OnCleanupToolExited()
-    {
-        animator.SetTrigger(CleanupToolExitedID);
+        animator.SetTrigger(toggle ? OnCleanupToolEnteredID : CleanupToolExitedID);
     }
 }

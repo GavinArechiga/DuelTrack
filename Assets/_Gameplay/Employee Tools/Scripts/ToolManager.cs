@@ -17,10 +17,12 @@ public class ToolManager : MonoBehaviour
     [SerializeField] private ToolTypeEventChannel switchToolEventChannel;
     [SerializeField] private Tool[] toolArray;
     
+    public static event Action<ToolType> OnToolEntered;
+    public static event Action<ToolType> OnToolExited;
+    
     private Dictionary<ToolType, Tool> toolLookup;
     private Tool currentTool;
-
-
+    
     private void Awake()
     {
         toolLookup = toolArray.ToDictionary(tool => tool.toolType, tool => tool);
@@ -44,11 +46,12 @@ public class ToolManager : MonoBehaviour
             currentTool.ToolUpdate();
         }
     }
-
+    
     private void SwitchTool(ToolType toolType)
     {
         if (currentTool != null)
         {
+            OnToolExited?.Invoke(currentTool.toolType);
             currentTool.Exit();
             currentTool.gameObject.SetActive(false);
             currentTool = null;
@@ -58,9 +61,7 @@ public class ToolManager : MonoBehaviour
         
         currentTool = toolLookup[toolType];
         currentTool.gameObject.SetActive(true);
+        OnToolEntered?.Invoke(currentTool.toolType);
         currentTool.Enter();
-        
     }
 }
-
-

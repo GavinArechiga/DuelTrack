@@ -6,10 +6,6 @@ public class ConstructionTool : Tool
     [Header("References")]
     [SerializeField] private ConstructionToolInputReaderSO inputReader;
     [SerializeField] private Transform heldItemParent;
-
-    [Header("Events")]
-    // TODO: replace with a shared event channel for all tools that passes along what tool it is
-    [SerializeField] private BoolEventChannel constructionToolActivatedEventChannel;
     
     private GameObject heldItem;
     private bool isCursorOverUI;
@@ -42,7 +38,6 @@ public class ConstructionTool : Tool
         inputReader.EnableInput();
         CameraManager.Instance.SwitchCamera(CameraType.BuildCamera);
         GridSystem.Instance.EnableGrid(true);
-        constructionToolActivatedEventChannel.Raise(true);
         UIInputReaderSO.EnableCursor();
     }
     
@@ -51,7 +46,6 @@ public class ConstructionTool : Tool
         inputReader.DisableInput();
         CameraManager.Instance.SwitchCamera(CameraType.PlayerCamera);
         GridSystem.Instance.EnableGrid(false);
-        constructionToolActivatedEventChannel.Raise(false);
     }
 
     public override void ToolUpdate()

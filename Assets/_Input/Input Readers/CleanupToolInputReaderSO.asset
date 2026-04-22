@@ -9,6 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4126ec239fee30d44aeaa8517b7e753f, type: 3}
-  m_Name: ConstructionToolActivatedEventChannel
-  m_EditorClassIdentifier: Assembly-CSharp::BoolEventChannel
+  m_Script: {fileID: 11500000, guid: 3eeaa4797e68d7641aa4a43b0389e8f5, type: 3}
+  m_Name: CleanupToolInputReaderSO
+  m_EditorClassIdentifier: Assembly-CSharp::CleanupToolInputReaderSO
+  inputSource: {fileID: 11400000, guid: 2de339b48945d9347ab0b320386400c6, type: 2}

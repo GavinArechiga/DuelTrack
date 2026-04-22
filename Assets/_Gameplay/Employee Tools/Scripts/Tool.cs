@@ -16,5 +16,6 @@ public abstract class Tool : MonoBehaviour
 
     public abstract void Enter();
     public abstract void Exit();
+    
     public abstract void ToolUpdate();
 }
