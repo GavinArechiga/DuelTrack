@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 7455938680454061877}
   - component: {fileID: 2067621408186048005}
   - component: {fileID: 2205202794577081624}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Litter
   m_TagString: Litter
   m_Icon: {fileID: 0}
@@ -255,7 +255,7 @@ Transform:
   m_GameObject: {fileID: 3370430742761658894}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.803}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

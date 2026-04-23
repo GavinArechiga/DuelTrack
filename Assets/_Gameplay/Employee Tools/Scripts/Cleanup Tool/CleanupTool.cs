@@ -34,11 +34,6 @@ public class CleanupTool : Tool
     {
         
     }
-    public void CollectTrash(GameObject trashObject)
-    {
-        Debug.Log(trashObject.name);
-        Destroy(trashObject);
-    }
     
     private void HandleToggleMount()
     {

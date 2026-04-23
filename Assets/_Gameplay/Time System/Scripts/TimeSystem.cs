@@ -70,7 +70,8 @@ public class TimeSystem : MonoBehaviour
     
     private void Tick()
     {
-        elapsedTime = 0;
+        // prevents drift from Time.deltaTime by resetting the timer to the remainer of elapsedTime / tickTime
+        elapsedTime %= tickTime;
         AddMinutes(1);
 
         var gameTime = new GameTime

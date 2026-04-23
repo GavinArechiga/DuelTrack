@@ -10,7 +10,11 @@ public class CleanupBroom : MonoBehaviour
    {
       if (other.CompareTag(LITTER_TAG))
       {
-         cleanupTool.CollectTrash(other.gameObject);
+         Destroy(other.gameObject);
+      }
+      else if (other.transform.parent.TryGetComponent(out Wastepool wastePool))
+      {
+         wastePool.ReduceWastePool();
       }
    }
 }
