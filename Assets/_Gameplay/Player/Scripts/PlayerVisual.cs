@@ -25,7 +25,7 @@ public class PlayerVisual : MonoBehaviour
         playerController.OnPlayerJump += PlayJumpAnimation;
         playerController.OnPlayerFall += PlayFreeFallAnimation;
         
-        CleanupTool.OnToggleMount += HandleToggleMount;
+        CleanupTool.OnMountToggled += HandleToggleMount;
     }
 
     private void OnDestroy()
@@ -35,7 +35,7 @@ public class PlayerVisual : MonoBehaviour
         playerController.OnPlayerJump -= PlayJumpAnimation;
         playerController.OnPlayerFall -= PlayFreeFallAnimation;
         
-        CleanupTool.OnToggleMount -= HandleToggleMount;
+        CleanupTool.OnMountToggled -= HandleToggleMount;
     }
 
     private void Start()

@@ -273,7 +273,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeed03fa59ab9fd418dc993946b48190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CleanupBroom
-  cleanupTool: {fileID: 0}
 --- !u!135 &579803213874977221
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -289,7 +288,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

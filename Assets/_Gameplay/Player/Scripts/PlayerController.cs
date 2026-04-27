@@ -31,12 +31,13 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Jump Variables
-
+    
     [SerializeField] private float jumpHeight;
     private readonly float gravity = Physics.gravity.y;
     private Vector3 velocity;
     private bool wasGrounded;
     private bool fallTriggered;
+    private bool disableGravity = false;
 
     #endregion
     
@@ -53,18 +54,23 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         CameraManager.Instance.OnCameraChange += HandleOnCameraChange;
+        CleanupTool.OnMountToggled += HandleCleanupToolMountToggle;
         velocity = characterController.velocity;
         previousRotation = transform.rotation;
     }
-
+    
     private void OnDestroy()
     {
         CameraManager.Instance.OnCameraChange -= HandleOnCameraChange;
+        CleanupTool.OnMountToggled -= HandleCleanupToolMountToggle;
     }
 
     private void Update()
     {
         Move();
+
+        if (disableGravity) { return; }
+
         Fall();
         Jump();
     }
@@ -86,6 +92,11 @@ public class PlayerController : MonoBehaviour
         }
     }
     
+    private void HandleCleanupToolMountToggle(bool mounted)
+    {
+        disableGravity = mounted;
+    }
+    
     #region Movement
 
     public void SwitchMovementMode(MovementModeType mode)
@@ -94,6 +105,7 @@ public class PlayerController : MonoBehaviour
         {
             MovementModeType.ThirdPerson => new ThirdPersonMovementMode(),
             MovementModeType.ConstructionTool => new ConstructionToolMovementMode(),
+            MovementModeType.Mounted => new MountedMovementMode(),
             _ => currentMovementMode,
         };
     }
@@ -101,9 +113,18 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         Vector2 input = inputReader.InputVector.normalized;
-        Vector3 moveDir = currentMovementMode.Move(input);
+
+        // We send the movement data to the movement mode.
+        // Then the movement mode sends it back with modifications depending on the current movement mode.
+        var data = new MovementData
+        {
+            Input = input,
+            Velocity = this.velocity,
+        };
         
-        //TODO: Move other parts of the move function into movement modes as needed
+        data = currentMovementMode.Move(data);
+
+        Vector3 moveDir = data.MoveDirection;
         
         // only rotate player if pressing button
         const float rotationInputThreshold = 0.1f;
@@ -114,8 +135,12 @@ public class PlayerController : MonoBehaviour
         
         CalculateSpeed(moveDir);
         
-        Vector3 finalMove = (moveDir * currentSpeed) + (velocity.y * Vector3.up);
-        characterController.Move(finalMove *  Time.deltaTime);
+        Vector3 finalMove = (moveDir * currentSpeed) + (data.Velocity.y * Vector3.up);
+
+        if (finalMove != Vector3.zero)
+        {
+            characterController.Move(finalMove *  Time.deltaTime);
+        }
         
         OnPlayerMove?.Invoke(currentSpeed);
     }

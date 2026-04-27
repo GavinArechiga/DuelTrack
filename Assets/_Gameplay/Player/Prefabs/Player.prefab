@@ -2050,10 +2050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CleanupTool
   toolType: 2
   inputReader: {fileID: 11400000, guid: 9f952fcf7d9ebd3448e900d547ef4a5d, type: 2}
-  broomGameObject: {fileID: 5784547960348604627}
-  trashLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
+  broomPrefab: {fileID: 8790012135081278606, guid: e0517e21661a7ff4e8b6c3a7226974f0, type: 3}
 --- !u!1 &6224527052601396994
 GameObject:
   m_ObjectHideFlags: 0
@@ -2823,11 +2820,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0517e21661a7ff4e8b6c3a7226974f0, type: 3}
---- !u!1 &5784547960348604627 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8790012135081278606, guid: e0517e21661a7ff4e8b6c3a7226974f0, type: 3}
-  m_PrefabInstance: {fileID: 3006912307514934365}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5917887653757153719 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8906499075825792490, guid: e0517e21661a7ff4e8b6c3a7226974f0, type: 3}

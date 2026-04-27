@@ -23,7 +23,7 @@ public class TimeSystem : MonoBehaviour
      public int Hours24 => GetHours24();
      public int Minutes  { get; private set; }
      public bool IsAm { get; private set; } = true;
-     public bool IsPaused { get; private set; }
+    [field: SerializeField] public bool IsPaused { get; private set; }
      
      private float elapsedTime;
      private int currentDayIndex;
