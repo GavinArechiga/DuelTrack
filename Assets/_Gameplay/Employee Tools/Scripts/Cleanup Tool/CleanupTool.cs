@@ -41,8 +41,7 @@ public class CleanupTool : Tool
         
         if (mounted)
         {
-            playerController.SwitchMovementMode(MovementModeType.Mounted);
-            broomInstance = Instantiate(broomPrefab, playerController.transform.position, Quaternion.identity);
+            broomInstance = Instantiate(broomPrefab, playerController.transform.position, playerController.transform.rotation);
             
             Vector3 broomPosition = broomInstance.transform.position + broomOffset;
             broomInstance.transform.position = broomPosition;
@@ -52,7 +51,6 @@ public class CleanupTool : Tool
         }
         else if (broomInstance != null)
         {
-            playerController.SwitchMovementMode(MovementModeType.ThirdPerson);
             broomInstance.transform.SetParent(null);
             Destroy(broomInstance);
         }

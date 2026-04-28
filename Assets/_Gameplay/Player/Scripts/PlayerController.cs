@@ -28,21 +28,20 @@ public class PlayerController : MonoBehaviour
     private Quaternion previousRotation;
     private Coroutine rotationCoroutine;
     private Coroutine speedCoroutine;
+    private CharacterController characterController;
+    private MovementMode currentMovementMode;
     #endregion
 
     #region Jump Variables
     
     [SerializeField] private float jumpHeight;
     private readonly float gravity = Physics.gravity.y;
-    private Vector3 velocity;
+    private Vector3 velocity; // Velocity is only used for falling, and the x and z values never change.
     private bool wasGrounded;
     private bool fallTriggered;
-    private bool disableGravity = false;
+    private bool disableGravity;
 
     #endregion
-    
-    private CharacterController characterController;
-    private MovementMode currentMovementMode;
     
     
     private void Awake()
@@ -95,6 +94,25 @@ public class PlayerController : MonoBehaviour
     private void HandleCleanupToolMountToggle(bool mounted)
     {
         disableGravity = mounted;
+
+        if (mounted)
+        {
+            velocity.y = 0;
+            wasGrounded = characterController.isGrounded;
+        }
+        else
+        {
+            // force a fall state when dismounting
+            velocity.y = -0.2f;
+            wasGrounded = false;
+
+            if (!characterController.isGrounded)
+            {
+                OnPlayerFall?.Invoke();
+            }
+        }
+
+        fallTriggered = false;
     }
     
     #region Movement
@@ -105,7 +123,6 @@ public class PlayerController : MonoBehaviour
         {
             MovementModeType.ThirdPerson => new ThirdPersonMovementMode(),
             MovementModeType.ConstructionTool => new ConstructionToolMovementMode(),
-            MovementModeType.Mounted => new MountedMovementMode(),
             _ => currentMovementMode,
         };
     }
@@ -113,16 +130,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         Vector2 input = inputReader.InputVector.normalized;
-
-        // We send the movement data to the movement mode.
-        // Then the movement mode sends it back with modifications depending on the current movement mode.
-        var data = new MovementData
-        {
-            Input = input,
-            Velocity = this.velocity,
-        };
-        
-        data = currentMovementMode.Move(data);
+        MovementData data = GetMovementData(input);
 
         Vector3 moveDir = data.MoveDirection;
         
@@ -137,13 +145,29 @@ public class PlayerController : MonoBehaviour
         
         Vector3 finalMove = (moveDir * currentSpeed) + (data.Velocity.y * Vector3.up);
 
+        
         if (finalMove != Vector3.zero)
         {
             characterController.Move(finalMove *  Time.deltaTime);
         }
         
+
         OnPlayerMove?.Invoke(currentSpeed);
     }
+
+    private MovementData GetMovementData(Vector2 input)
+    {
+        // We send the movement data to the movement mode.
+        // Then the movement mode sends it back with modifications depending on the current movement mode.
+        var data = new MovementData
+        {
+            Input = input,
+            Velocity = this.velocity,
+        };
+        
+        return currentMovementMode.Move(data);
+    }
+    
     private void RotatePlayer(Vector3 movement)
     {
         Quaternion newRotation = Quaternion.LookRotation(movement, Vector3.up);
@@ -174,7 +198,7 @@ public class PlayerController : MonoBehaviour
             angle += 360f;
         }
         
-        // splits player direction into 8 segments each equaling 45 degrees.
+        // splits the player direction into 8 segments each equaling 45 degrees.
         // By getting the remainder of the players (current angle / 45) / 8 we get the index of which direction they are facing. We then convert the index to the direction enum.
         //This methode is more accurate than relying on the dot product of the players forward vector 
         int sector = Mathf.RoundToInt(angle / 45) % 8;
@@ -247,6 +271,8 @@ public class PlayerController : MonoBehaviour
         const float safetyFallThreshold = -0.5f;
         switch (characterController.isGrounded)
         {
+            // first bool checks characterController.isGrounded anything after the "when" keyword is an additional bool check.
+            // you can think of each switch case as being an && check. 
             case true when velocity.y < 0 && !wasGrounded:
                 velocity.y = 0;
                 OnPlayerLand?.Invoke();
