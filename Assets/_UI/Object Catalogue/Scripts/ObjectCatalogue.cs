@@ -12,14 +12,15 @@ public class ObjectCatalogue : MonoBehaviour
     private string searchString;
     
     [Header("Events")]
-    [SerializeField] private BoolEventChannel constructionToolActivatedEventChannel;
     [SerializeField] private BoolEventChannel toggleToolWheelEventChannel;
     
     private bool constructionToolIsActive;
     
     private void Start()
     {
-        constructionToolActivatedEventChannel.AddListener(OnConstructionToolActivated);
+       ToolManager.OnToolEntered += OnToolEntered;
+       ToolManager.OnToolExited += OnToolExited;
+       
         toggleToolWheelEventChannel.AddListener(ToggleCatalogue);
         
         if (themeList.Count == 0) { return; }
@@ -35,7 +36,9 @@ public class ObjectCatalogue : MonoBehaviour
 
     private void OnDestroy()
     {
-        constructionToolActivatedEventChannel.RemoveListener(OnConstructionToolActivated);
+        ToolManager.OnToolEntered -= OnToolEntered;
+        ToolManager.OnToolExited -= OnToolExited;
+        
         toggleToolWheelEventChannel.RemoveListener(ToggleCatalogue);
     }
 
@@ -54,12 +57,19 @@ public class ObjectCatalogue : MonoBehaviour
        selectedTheme.SetGridTheme();
        Search(searchString);
     }
-    
-    private void OnConstructionToolActivated(bool isActive)
+
+    private void OnToolEntered(ToolType toolType)
     {
-        constructionToolIsActive = isActive;
-        
-        ToggleCatalogue(constructionToolIsActive);
+        if (toolType != ToolType.Construction) { return; }
+        constructionToolIsActive = true;
+        ToggleCatalogue(true);
+    }
+
+    private void OnToolExited(ToolType toolType)
+    {
+        if (toolType != ToolType.Construction) { return; }
+        constructionToolIsActive = false;
+        ToggleCatalogue(false);
     }
     
     private void ToggleCatalogue(bool enable)

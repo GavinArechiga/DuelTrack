@@ -23,7 +23,7 @@ public class TimeSystem : MonoBehaviour
      public int Hours24 => GetHours24();
      public int Minutes  { get; private set; }
      public bool IsAm { get; private set; } = true;
-     public bool IsPaused { get; private set; }
+    [field: SerializeField] public bool IsPaused { get; private set; }
      
      private float elapsedTime;
      private int currentDayIndex;
@@ -70,7 +70,8 @@ public class TimeSystem : MonoBehaviour
     
     private void Tick()
     {
-        elapsedTime = 0;
+        // prevents drift from Time.deltaTime by resetting the timer to the remainer of elapsedTime / tickTime
+        elapsedTime %= tickTime;
         AddMinutes(1);
 
         var gameTime = new GameTime

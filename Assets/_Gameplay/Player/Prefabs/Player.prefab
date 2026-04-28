@@ -288,6 +288,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 325792445843734697}
+  - {fileID: 5369102251263993524}
   m_Father: {fileID: 4782350662894866667}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4222824240978035371
@@ -303,9 +304,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToolManager
   playerController: {fileID: 3059139494034766862}
+  playerVisual: {fileID: 4669760610025651460}
   switchToolEventChannel: {fileID: 11400000, guid: ffa3b93341b4a724a861902a4fa61e10, type: 2}
   toolArray:
   - {fileID: 5542721749609089341}
+  - {fileID: 3776169542780237563}
 --- !u!1 &863948347977950911
 GameObject:
   m_ObjectHideFlags: 0
@@ -1772,6 +1775,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51dc56844afa03046bb654498014bec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerVisual
+  animator: {fileID: 1288330115703468548}
+  playerController: {fileID: 3059139494034766862}
 --- !u!114 &3059139494034766862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1785,7 +1790,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   inputReader: {fileID: 11400000, guid: ab88103decd7b904bbf7e799f6394348, type: 2}
-  playerCamTransform: {fileID: 0}
   walkSpeed: 3
   runSpeed: 6
   jumpHeight: 1.5
@@ -1935,7 +1939,6 @@ MonoBehaviour:
   toolType: 1
   inputReader: {fileID: 11400000, guid: 6760b59c54b15d84b8ac4530da3ce694, type: 2}
   heldItemParent: {fileID: 7922018018571584866}
-  constructionToolActivatedEventChannel: {fileID: 11400000, guid: ce3dc05e44eb5ee4d8906d9ad130b1a1, type: 2}
 --- !u!1 &5752074397514311265
 GameObject:
   m_ObjectHideFlags: 0
@@ -2000,6 +2003,54 @@ Transform:
   - {fileID: 7921296707256068668}
   m_Father: {fileID: 3874376727503404670}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6029428380172252194
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5369102251263993524}
+  - component: {fileID: 3776169542780237563}
+  m_Layer: 0
+  m_Name: Cleanup Tool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &5369102251263993524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6029428380172252194}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8205270339627300036}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3776169542780237563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6029428380172252194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c14d1b6fdade7644abc56a48a35752b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CleanupTool
+  toolType: 2
+  inputReader: {fileID: 11400000, guid: 9f952fcf7d9ebd3448e900d547ef4a5d, type: 2}
+  broomPrefab: {fileID: 8790012135081278606, guid: e0517e21661a7ff4e8b6c3a7226974f0, type: 3}
+  broomOffset: {x: 0, y: 0.5, z: 0}
 --- !u!1 &6224527052601396994
 GameObject:
   m_ObjectHideFlags: 0
